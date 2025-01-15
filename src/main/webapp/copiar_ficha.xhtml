@@ -1,0 +1,86 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>Copiar Ficha</title>  
+        <link rel="shortcut icon" type="image/png" href="images/favicon.png" />
+        <link rel="stylesheet" href="https://unpkg.com/primeflex@^3/primeflex.css"/>
+    </h:head>
+
+    <style type="text/css">
+
+
+    </style>
+
+    <h:form id="form">
+        <p:growl showDetail="true" id="msgs" />
+        <p:panel header="#{copiarFichaBean.usuario.nombre}">
+            <div class="card">
+
+                <div class="flex align-items-start justify-content-start card-container ">
+
+                    <div >
+                        <p:dataTable  id="dtEstilo" value="#{copiarFichaBean.listEstilo}"
+                                      selectionMode="single"
+                                      selection="#{copiarFichaBean.estilo}"
+                                      paginatorPosition="bottom"
+                                      paginator="true" rows="10"
+                                      var="estiloVar"
+                                      rowKey="#{estiloVar.idEstilo}">
+                            <p:ajax event="rowSelect"  process="@this, dtEstilo" update="btn"/>
+                            <p:ajax event="rowUnselect" process="@this, dtEstilo" update="btn"/>
+                            <f:facet name="header" >
+                                Seleccione Ficha a copiar
+                            </f:facet>
+                            <p:column headerText="Estilo" filterBy="#{estiloVar.estilo}" filterMatchMode="contains">
+                                <h:outputText value="#{estiloVar.estilo} - #{estiloVar.idMarca.nombre}" />
+                            </p:column>
+                            <p:column headerText="Referencias">
+                                <h:outputText value="#{estiloVar.referencias}"/>
+                            </p:column>
+                            <p:column headerText="Creado por" class="w-2">
+                                <h:outputText value="#{estiloVar.idCreado.nombre} #{estiloVar.idCreado.apellido}"/>
+                            </p:column>
+                            <p:column headerText="Fecha" class="w-2">
+                                <h:outputText value="#{estiloVar.creado}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="GMT-5"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Estado" class="w-2">
+                                <h:outputText value="#{estiloVar.estado}"/>
+                            </p:column>
+                            <f:facet name="footer" >
+                                <p:commandButton value="Copiar ficha seleccionada"  actionListener="#{copiarFichaBean.abrirDlgCrearFicha}" id="btn"
+                                                 process="@this,dtEstilo" update="form:creFich" class="m-3" disabled="#{copiarFichaBean.estilo.idEstilo eq null}"/>
+                            </f:facet>
+                        </p:dataTable>
+                        <p:dialog header="Ficha" widgetVar="dlgCrearFicha" id="creFich" modal="true">
+
+                            <h:panelGrid columns="1">
+                                <p:outputLabel for="est" value="Estilo de la nueva Ficha"/>
+                                <p:inputText id="est" value="#{copiarFichaBean.estiloNuevo.estilo}" />
+
+                                <p:outputLabel for="ref" value="Referencia"/>
+                                <p:inputText id="ref" value="#{copiarFichaBean.estiloNuevo.referencias}" />
+
+                                <p:commandButton value="Crear" actionListener="#{copiarFichaBean.copiarFicha()}" process="@this, est,ref,form:dtEstilo" update="creFich,form:msgs" 
+                                                 class="mt-2"/>
+                            </h:panelGrid>
+
+                        </p:dialog>
+                    </div>
+                </div>
+            </div>
+        </p:panel>
+
+
+    </h:form>
+    <h:form id="dlgs" >
+
+
+
+
+    </h:form>
+</html>

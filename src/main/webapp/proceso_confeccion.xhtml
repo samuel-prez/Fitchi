@@ -1,0 +1,504 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>Proceso confección</title>  
+        <link rel="shortcut icon" type="image/png" href="images/favicon.png" />
+        <link rel="stylesheet" href="https://unpkg.com/primeflex@^3/primeflex.css"/>
+    </h:head>
+
+    <style type="text/css">
+
+    </style>
+
+    <h:form id="form">
+        <p:growl showDetail="true" id="msgs" />
+        <p:panel header="Proceso confección" >
+            <div class="flex justify-content-center" >
+                <div class="card flex align-items-start justify-content-center w-9" >
+                    <div class="card-container w-6 ml-4">
+                        <div class="flex align-items-start justify-content-start">
+                            <p:outputLabel value="Estilo" class="font-medium text-xl m-2"/>
+                            <p:outputLabel value="#{procesoConfeccionBean.estilo.estilo}" class="font-medium text-xl m-2"/>
+                        </div>
+                        <div class="flex align-items-center justify-content-start">
+                            <p:outputLabel value="Referencia:" class="m-2"/>
+                            <p:outputLabel id="inRef" value="#{procesoConfeccionBean.estilo.referencias}" class="m-2 w-7" />
+                        </div>
+                        <div class="mt-3">
+                            <p:fileUpload mode="advanced"
+                                          multiple="false"  label="Subir foto" auto="true"
+                                          sizeLimit="10240000" allowTypes="/(\.|\/)(jpg|jpeg|png)$/"
+                                          invalidSizeMessage="Archivo muy pesado" process="@this" disabled="#{procesoConfeccionBean.dsbEdicion}"
+                                          invalidFileMessage="Formatos aceptados: jpg, jpeg, png."
+                                          update="panImg"
+                                          listener="#{procesoConfeccionBean.handleFileUpload}"/>
+                        </div>
+                        <div class="card mt-2" id="divImg">
+                            <h:panelGroup id="panImg">
+                                <p:graphicImage value="http://192.0.0.121:8080/Fitchi/Cargues/Confeccion/#{procesoConfeccionBean.procesoConfeccion.imagen}" class="w-full"
+                                                rendered="#{procesoConfeccionBean.procesoConfeccion.imagen == null ? false : true}" id="imgEst"/>
+                            </h:panelGroup>
+                        </div>
+                    </div>
+                    <div class="card-container w-6 ml-4" >
+                        <p:dataTable id="dtParametro" value="#{procesoConfeccionBean.parametroPrendaEstiloList}"
+                                     var="parametroVar"
+                                     emptyMessage="Sin parámetros" >
+                            <p:column headerText="No." class="w-3">
+                                <h:outputText  value="#{parametroVar.orden + 1}"/>
+                            </p:column>
+                            <p:column headerText="Partes del producto">
+                                <h:outputText  value="#{parametroVar.idParametroPrenda.nombre}"/>
+                            </p:column>
+                        </p:dataTable>
+                        <div class="font-medium text-xl m-2">
+                            <p:outputLabel value="Embalaje"/>
+                        </div>
+                        <div class="">
+                            <p:outputLabel value="Cantidad por talego:" class="m-2"/>
+                            <p:inputNumber id="inTal" value="#{procesoConfeccionBean.procesoConfeccion.cantidadTalego}" class="m-2" size="4"/>
+                            <p:outputLabel value=" unidades" class="m-1"/>
+                        </div>
+                        <div class="mt-2">
+                            <p:outputLabel value="Cantidad por canasta:" class="m-2"/>
+                            <p:inputNumber id="inBul" value="#{procesoConfeccionBean.procesoConfeccion.cantidadBulto}" class="m-2" size="4"/>
+                            <p:outputLabel value=" talegos" class="m-1"/>
+                        </div>
+                        <div class="mt-2">
+                            <p:outputLabel value="Observaciones:" class="m-2"/>
+                            <p:inputTextarea id="inObs" value="#{procesoConfeccionBean.procesoConfeccion.observaciones}" class="m-2 w-full" />
+                        </div>
+                        <div class="mt-2">
+                            <p:commandButton value="Guardar" process="@this, inTal, inBul, inObs" update="msgs" disabled="#{procesoConfeccionBean.dsbEdicion}"
+                                             actionListener="#{procesoConfeccionBean.guardarCantidades()}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <div class="justify-content-center" >
+                <div class="card flex  align-items-center justify-content-center">
+                    <p:accordionPanel multiple="true" widgetVar="multiple"  activeIndex="0,1,2">
+                        <p:tab title="Corte de telas">
+                            <div class="flex align-items-center">
+                                <p:inputTextarea id="inOperTela" value="#{procesoConfeccionBean.corteTela.operacion}" placeholder="Operación" class="w-3"/>
+                                <p:selectOneMenu id="somMaqTela" value="#{procesoConfeccionBean.corteTela.idMaquina}" class="w-2 m-1"  filter="true"
+                                                 converter="entityConverter" filterMatchMode="contains" autoWidth="false">
+                                    <f:selectItem itemLabel="Máquina" itemValue="#{null}"/>
+                                    <f:selectItems value="#{procesoConfeccionBean.maquinaConfeccionList}"
+                                                   var="maquinaVar"
+                                                   itemValue="#{maquinaVar}"
+                                                   itemLabel="#{maquinaVar.nombre}"
+                                                   />   
+                                </p:selectOneMenu>
+                                <p:selectOneMenu id="somAguTela" value="#{procesoConfeccionBean.corteTela.idAguja}" class="m-1"  filter="true"
+                                                 converter="entityConverter" filterMatchMode="contains" autoWidth="false">
+                                    <f:selectItem itemLabel="Aguja" itemValue="#{null}"/>
+                                    <f:selectItems value="#{procesoConfeccionBean.agujaList}"
+                                                   var="agujaVar"
+                                                   itemValue="#{agujaVar}"
+                                                   itemLabel="#{agujaVar.nombre}"
+                                                   />   
+                                </p:selectOneMenu>
+                                <p:inputNumber class="m-1" value="#{procesoConfeccionBean.corteTela.agujaCantidad}" placeholder="Cantidad" id="inAguTela" size="3"/>
+                                <p:inputText class="w-1 m-1" value="#{procesoConfeccionBean.corteTela.puntadaPulgada}" placeholder="Punt x pul." id="inCanTela"/>
+                                <p:selectOneMenu id="somMatTela" value="#{procesoConfeccionBean.corteTela.idMaterial}" class="w-2"  filter="true"
+                                                 converter="entityConverter" filterMatchMode="contains" autoWidth="false" >
+                                    <f:selectItem itemLabel="Seleccione material" itemValue="#{null}"/>
+                                    <f:selectItems value="#{procesoConfeccionBean.materialEstiloConfeccionList}"
+                                                   var="materialVar"
+                                                   itemValue="#{materialVar}"
+                                                   itemLabel="#{materialVar.idMaterial.codigo} #{materialVar.idMaterial.nombre}"/>   
+                                </p:selectOneMenu>
+                                <p:commandButton value="Añadir" process="@this,inOperTela,somMaqTela,somAguTela,inAguTela,inCanTela,somMatTela"
+                                                 update="dtCorteTela,inOperTela,somMaqTela,somAguTela,inAguTela,inCanTela,somMatTela" disabled="#{procesoConfeccionBean.dsbEdicion}"
+                                                 class="m-1" actionListener="#{procesoConfeccionBean.añadirCorteTela()}"/>
+                            </div>
+                            <p:dataTable  id="dtCorteTela" var="telaVar" value="#{procesoConfeccionBean.corteTelaList}" editable="true"
+                                          emptyMessage="Sin operaciones" size="small" draggableRows="#{!procesoConfeccionBean.dsbEdicion}">
+                                <p:ajax event="rowReorder" listener="#{procesoConfeccionBean.onRowReorderCorteTela}" update="dtCorteTela"/>
+                                <p:ajax event="rowEdit" listener="#{procesoConfeccionBean.onRowEdit}" update="dtCorteTela,:form:msgs"/>
+                                <p:column headerText="Operación" >
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{telaVar.operacion}"/>
+                                        </f:facet>
+                                        <f:facet name="input" >
+                                            <p:inputTextarea class="w-full" value="#{telaVar.operacion}"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Máquina" class="" style="width: 150px">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{telaVar.idMaquina.nombre}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu value="#{telaVar.idMaquina}" filter="true"
+                                                             converter="entityConverter" filterMatchMode="contains" autoWidth="true">
+                                                <f:selectItems value="#{procesoConfeccionBean.maquinaConfeccionList}" var="maquinaVar"
+                                                               itemValue="#{maquinaVar}" itemLabel="#{maquinaVar.nombre}"/>   
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Aguja" class="" style="width: 60px">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{telaVar.idAguja.nombre}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu value="#{telaVar.idAguja}" converter="entityConverter" autoWidth="false">
+                                                <f:selectItems value="#{procesoConfeccionBean.agujaList}" var="agujaVar"
+                                                               itemValue="#{agujaVar}" itemLabel="#{agujaVar.nombre}"/>   
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Cant." class="" style="width: 60px">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{telaVar.agujaCantidad}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:inputText   value="#{telaVar.agujaCantidad}"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Punt x Pulg" class="" style="width: 100px">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{telaVar.puntadaPulgada}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:inputText   value="#{telaVar.puntadaPulgada}"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Material" class="w-3" style="width: 100px">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{telaVar.idMaterial.idMaterial.codigo} #{telaVar.idMaterial.idMaterial.nombre}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu value="#{telaVar.idMaterial}" filter="true"
+                                                             converter="entityConverter" filterMatchMode="contains" autoWidth="false" >
+                                                <f:selectItem itemLabel="Material" itemValue="#{null}"/>
+                                                <f:selectItems value="#{procesoConfeccionBean.materialEstiloConfeccionList}"
+                                                               var="materialVar"
+                                                               itemValue="#{materialVar}"
+                                                               itemLabel="#{materialVar.idMaterial.codigo} #{materialVar.idMaterial.nombre}"/>   
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>                            
+                                <p:column style="width:2rem">
+                                    <p:rowEditor editTitle="Editar" cancelTitle="Cancelar" saveTitle="Guardar"/>
+                                </p:column>
+                                <p:column style="width:3rem;text-align: center">
+                                    <p:commandButton update="dtCorteTela" action="#{procesoConfeccionBean.borrarFase(0)}" disabled="#{procesoConfeccionBean.dsbEdicion}"
+                                                     process="@this,dtCorteTela" icon="pi pi-times" title="Borrar fase"  >
+                                        <f:setPropertyActionListener value="#{telaVar}"
+                                                                     target="#{procesoConfeccionBean.faseSeleccionada}"/>
+                                        <p:confirm header="Confirmación" message="¿Está segura de borrar el registro?" icon="pi pi-info-circle"/>
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </p:tab>
+                        <p:tab title="Corte tubular">
+                            <div class="flex align-items-center">
+                                <p:inputTextarea id="inOperTubu" value="#{procesoConfeccionBean.corteTubular.operacion}" placeholder="Operación" class="w-3"/>
+                                <p:selectOneMenu id="somMaqTubu" value="#{procesoConfeccionBean.corteTubular.idMaquina}" class="w-2 m-1"  filter="true"
+                                                 converter="entityConverter" filterMatchMode="contains" autoWidth="false">
+                                    <f:selectItem itemLabel="Máquina" itemValue="#{null}"/>
+                                    <f:selectItems value="#{procesoConfeccionBean.maquinaConfeccionList}"
+                                                   var="maquinaVar2"
+                                                   itemValue="#{maquinaVar2}"
+                                                   itemLabel="#{maquinaVar2.nombre}"
+                                                   />   
+                                </p:selectOneMenu>
+                                <p:selectOneMenu id="somAguTubu" value="#{procesoConfeccionBean.corteTubular.idAguja}" class="m-1"  filter="true"
+                                                 converter="entityConverter" filterMatchMode="contains" autoWidth="false">
+                                    <f:selectItem itemLabel="Aguja" itemValue="#{null}"/>
+                                    <f:selectItems value="#{procesoConfeccionBean.agujaList}"
+                                                   var="agujaVar2"
+                                                   itemValue="#{agujaVar2}"
+                                                   itemLabel="#{agujaVar2.nombre}"
+                                                   />   
+                                </p:selectOneMenu>
+                                <p:inputNumber class="m-1" value="#{procesoConfeccionBean.corteTubular.agujaCantidad}" placeholder="Cantidad" id="inAguTubu" size="3"/>
+                                <p:inputText class="w-1 m-1" value="#{procesoConfeccionBean.corteTubular.puntadaPulgada}" placeholder="Punt x pul." id="inCanTubu"/>
+                                <p:selectOneMenu id="somMatTubu" value="#{procesoConfeccionBean.corteTubular.idMaterial}" class="w-2"  filter="true"
+                                                 converter="entityConverter" filterMatchMode="contains" autoWidth="false" >
+                                    <f:selectItem itemLabel="Seleccione material" itemValue="#{null}"/>
+                                    <f:selectItems value="#{procesoConfeccionBean.materialEstiloConfeccionList}"
+                                                   var="materialVar2"
+                                                   itemValue="#{materialVar2}"
+                                                   itemLabel="#{materialVar2.idMaterial.codigo} #{materialVar2.idMaterial.nombre}"/>   
+                                </p:selectOneMenu>
+                                <p:commandButton value="Añadir" process="@this,inOperTubu,somMaqTubu,somAguTubu,inAguTubu,inCanTubu,somMatTubu"
+                                                 update="dtCorteTubu,inOperTubu,somMaqTubu,somAguTubu,inAguTubu,inCanTubu,somMatTubu" disabled="#{procesoConfeccionBean.dsbEdicion}"
+                                                 class="m-1" actionListener="#{procesoConfeccionBean.añadirCorteTubular()}"/>
+
+                            </div>
+                            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+                                <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes" />
+                            </p:confirmDialog>
+                            <p:dataTable  id="dtCorteTubu" var="tubuVar" value="#{procesoConfeccionBean.corteTubularList}"
+                                          draggableRows="#{!procesoConfeccionBean.dsbEdicion}" editable="true"
+                                            emptyMessage="Sin operaciones" size="small">
+                                <p:ajax event="rowEdit" listener="#{procesoConfeccionBean.onRowEdit}" update="dtCorteTubu,:form:msgs"/>
+                                <p:ajax event="rowReorder" listener="#{procesoConfeccionBean.onRowReorderCorteTubular}" update="dtCorteTubu"/>
+                                <p:column headerText="Operación" class="">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{tubuVar.operacion}"/>
+                                        </f:facet>
+                                        <f:facet name="input" >
+                                            <p:inputTextarea class="w-full" value="#{tubuVar.operacion}"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Máquina" class="" style="width: 150px">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{tubuVar.idMaquina.nombre}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu value="#{tubuVar.idMaquina}" filter="true"
+                                                             converter="entityConverter" filterMatchMode="contains" autoWidth="true">
+                                                <f:selectItems value="#{procesoConfeccionBean.maquinaConfeccionList}" var="maquinaVar"
+                                                               itemValue="#{maquinaVar}" itemLabel="#{maquinaVar.nombre}"/>   
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Aguja" class="" style="width: 60px">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{tubuVar.idAguja.nombre}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu value="#{tubuVar.idAguja}" converter="entityConverter" autoWidth="false">
+                                                <f:selectItems value="#{procesoConfeccionBean.agujaList}" var="agujaVar"
+                                                               itemValue="#{agujaVar}" itemLabel="#{agujaVar.nombre}"/>   
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Cant." class="" style="width: 60px">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{tubuVar.agujaCantidad}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:inputText   value="#{tubuVar.agujaCantidad}"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Punt x Pulg" class="" style="width: 100px">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{tubuVar.puntadaPulgada}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:inputText   value="#{tubuVar.puntadaPulgada}"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Material" class="w-3" style="width: 100px">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{tubuVar.idMaterial.idMaterial.codigo} #{tubuVar.idMaterial.idMaterial.nombre}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu value="#{tubuVar.idMaterial}" filter="true"
+                                                             converter="entityConverter" filterMatchMode="contains" autoWidth="false" >
+                                                <f:selectItem itemLabel="Material" itemValue="#{null}"/>
+                                                <f:selectItems value="#{procesoConfeccionBean.materialEstiloConfeccionList}"
+                                                               var="materialVar"
+                                                               itemValue="#{materialVar}"
+                                                               itemLabel="#{materialVar.idMaterial.codigo} #{materialVar.idMaterial.nombre}"/>   
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>                          
+                                <p:column style="width:2rem">
+                                    <p:rowEditor editTitle="Editar" cancelTitle="Cancelar" saveTitle="Guardar"/>
+                                </p:column>
+                                <p:column style="width:3rem;text-align: center">
+                                    <p:commandButton update="dtCorteTubu" action="#{procesoConfeccionBean.borrarFase(1)}" disabled="#{procesoConfeccionBean.dsbEdicion}"
+                                                     process="@this,dtCorteTubu" icon="pi pi-times" title="Borrar fase"  >
+                                        <f:setPropertyActionListener value="#{tubuVar}"
+                                                                     target="#{procesoConfeccionBean.faseSeleccionada}"/>
+                                        <p:confirm header="Confirmación" message="¿Está segura de borrar el registro?" icon="pi pi-info-circle"/>
+                                    </p:commandButton>
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:tab>
+                        <p:tab title="Armar prenda">
+                            <div class="flex align-items-center">
+                                <p:inputTextarea id="inOperArmar" value="#{procesoConfeccionBean.armarPrenda.operacion}" placeholder="Operación" class="w-3"/>
+                                <p:selectOneMenu id="somMaqArmar" value="#{procesoConfeccionBean.armarPrenda.idMaquina}" class="w-2 m-1"  filter="true"
+                                                 converter="entityConverter" filterMatchMode="contains" autoWidth="false">
+                                    <f:selectItem itemLabel="Máquina" itemValue="#{null}"/>
+                                    <f:selectItems value="#{procesoConfeccionBean.maquinaConfeccionList}"
+                                                   var="maquinaVar3"
+                                                   itemValue="#{maquinaVar3}"
+                                                   itemLabel="#{maquinaVar3.nombre}"
+                                                   />   
+                                </p:selectOneMenu>
+                                <p:selectOneMenu id="somAguArmar" value="#{procesoConfeccionBean.armarPrenda.idAguja}" class="m-1"  filter="true"
+                                                 converter="entityConverter" filterMatchMode="contains" autoWidth="false">
+                                    <f:selectItem itemLabel="Aguja" itemValue="#{null}"/>
+                                    <f:selectItems value="#{procesoConfeccionBean.agujaList}"
+                                                   var="agujaVar3"
+                                                   itemValue="#{agujaVar3}"
+                                                   itemLabel="#{agujaVar3.nombre}"
+                                                   />   
+                                </p:selectOneMenu>
+                                <p:inputNumber class="m-1" value="#{procesoConfeccionBean.armarPrenda.agujaCantidad}" placeholder="Cantidad" id="inAguArmar" size="3"/>
+                                <p:inputText class="w-1 m-1" value="#{procesoConfeccionBean.armarPrenda.puntadaPulgada}" placeholder="Punt x pul." id="inCanArmar"/>
+                                <p:selectOneMenu id="somMatArmar" value="#{procesoConfeccionBean.armarPrenda.idMaterial}" class="w-2"  filter="true"
+                                                 converter="entityConverter" filterMatchMode="contains" autoWidth="false" >
+                                    <f:selectItem itemLabel="Seleccione material" itemValue="#{null}"/>
+                                    <f:selectItems value="#{procesoConfeccionBean.materialEstiloConfeccionList}"
+                                                   var="materialVar3"
+                                                   itemValue="#{materialVar3}"
+                                                   itemLabel="#{materialVar3.idMaterial.codigo} #{materialVar3.idMaterial.nombre}"/>   
+                                </p:selectOneMenu>
+                                <p:selectBooleanCheckbox value="#{procesoConfeccionBean.armarPrenda.negrilla}" itemLabel="Negrilla" id="checkNegrilla" class="ml-2"/>
+                                <p:commandButton value="Añadir" process="@this,inOperArmar,somMaqArmar,somAguArmar,inAguArmar,inCanArmar,somMatArmar,checkNegrilla"
+                                                 update="dtArmarPrenda,inOperArmar,somMaqArmar,somAguArmar,inAguArmar,inCanArmar,somMatArmar,checkNegrilla"
+                                                 disabled="#{procesoConfeccionBean.dsbEdicion}"
+                                                 class="m-1" actionListener="#{procesoConfeccionBean.añadirArmarPrenda()}"/>
+                            </div>
+                            <p:dataTable  id="dtArmarPrenda" var="armarVar" value="#{procesoConfeccionBean.armarPrendaList}"  editable="true"
+                                          draggableRows="#{!procesoConfeccionBean.dsbEdicion}"> emptyMessage="Sin operaciones" size="small">
+                                <p:ajax event="rowReorder" listener="#{procesoConfeccionBean.onRowReorderArmarPrenda}" update="dtArmarPrenda"/>
+                                <p:ajax event="rowEdit" listener="#{procesoConfeccionBean.onRowEdit}" update="dtArmarPrenda,:form:msgs"/>
+                                <p:column headerText="Operación" class="">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{armarVar.operacion}" class="#{armarVar.negrilla eq true ? 'font-bold' : 'font-normal'}"/>
+                                        </f:facet>
+                                        <f:facet name="input" >
+                                            <p:inputTextarea class="w-full" value="#{armarVar.operacion}"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Máquina" class="" style="width: 150px">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{armarVar.idMaquina.nombre}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu value="#{armarVar.idMaquina}" filter="true"
+                                                             converter="entityConverter" filterMatchMode="contains" autoWidth="true">
+                                                <f:selectItems value="#{procesoConfeccionBean.maquinaConfeccionList}" var="maquinaVar"
+                                                               itemValue="#{maquinaVar}" itemLabel="#{maquinaVar.nombre}"/>   
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Aguja" class="" style="width: 60px">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{armarVar.idAguja.nombre}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu value="#{armarVar.idAguja}" converter="entityConverter" autoWidth="false">
+                                                <f:selectItems value="#{procesoConfeccionBean.agujaList}" var="agujaVar"
+                                                               itemValue="#{agujaVar}" itemLabel="#{agujaVar.nombre}"/>   
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Cant." class="" style="width: 60px">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{armarVar.agujaCantidad}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:inputText   value="#{armarVar.agujaCantidad}"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Punt x Pulg" class="" style="width: 100px">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{armarVar.puntadaPulgada}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:inputText   value="#{armarVar.puntadaPulgada}"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Material" class="w-3" style="width: 100px">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{armarVar.idMaterial.idMaterial.codigo} #{armarVar.idMaterial.idMaterial.nombre}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu value="#{armarVar.idMaterial}" filter="true"
+                                                             converter="entityConverter" filterMatchMode="contains" autoWidth="false" >
+                                                <f:selectItem itemLabel="Material" itemValue="#{null}"/>
+                                                <f:selectItems value="#{procesoConfeccionBean.materialEstiloConfeccionList}"
+                                                               var="materialVar"
+                                                               itemValue="#{materialVar}"
+                                                               itemLabel="#{materialVar.idMaterial.codigo} #{materialVar.idMaterial.nombre}"/>   
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>  
+                                <p:column style="width:2rem">
+                                    <p:rowEditor editTitle="Editar" cancelTitle="Cancelar" saveTitle="Guardar"/>
+                                </p:column>
+                                <p:column style="width:3rem;text-align: center">
+                                    <p:commandButton update="dtArmarPrenda" action="#{procesoConfeccionBean.borrarFase(2)}" disabled="#{procesoConfeccionBean.dsbEdicion}"
+                                                     process="@this,dtArmarPrenda" icon="pi pi-times" title="Borrar fase"  >
+                                        <f:setPropertyActionListener value="#{armarVar}"
+                                                                     target="#{procesoConfeccionBean.faseSeleccionada}"/>
+                                        <p:confirm header="Confirmación" message="¿Está segura de borrar el registro?" icon="pi pi-info-circle"/>
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </p:tab>
+                    </p:accordionPanel>
+                </div>
+            </div>
+            <br/>
+
+        </p:panel>
+
+    </h:form>
+    <h:form >
+
+        <div class="flex justify-content-center" >
+            <div class="card flex align-items-start justify-content-start w-10" >
+                <div class="card-container ml-1 w-full">
+                    <div class="ml-10">
+                        <p:commandButton value="Imprimir"
+                                         process="@this"                          
+                                         ajax="false" disabled="#{procesoConfeccionBean.dsbImpresion}"
+                                         actionListener="#{procesoConfeccionBean.imprimirReporte()}"
+                                         update="@form"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex align-items-end justify-content-between mt-3">
+            <p:commandButton class="flex border-round m-2" process="@this" update="@form" icon="pi pi-arrow-left"
+                             value="Parámetros de tallaje" action="#{procesoConfeccionBean.redirect('parametro_tallaje')}"/>
+            <p:commandButton class="flex border-round m-2" process="@this" update="@form" icon="pi pi-home" iconPos="right"
+                             value="Inicio" action="principal?faces-redirect=true"/>
+            <p:commandButton class="flex border-round m-2" process="@this" update="@form" icon="pi pi-arrow-right" iconPos="right"
+                             value="Proceso de acabados" action="#{procesoConfeccionBean.redirect('proceso_acabado')}"/>
+        </div>
+    </h:form>
+</html>

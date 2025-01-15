@@ -1,0 +1,159 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>Plancha y Tintorería</title>  
+        <link rel="shortcut icon" type="image/png" href="images/favicon.png" />
+        <link rel="stylesheet" href="https://unpkg.com/primeflex@^3/primeflex.css"/>
+    </h:head>
+
+    <style type="text/css">
+
+    </style>
+
+    <h:form id="form">
+        <p:growl showDetail="true" id="msgs" />
+        <p:panel header="Plancha y tintorería" >
+             <p:commandButton class=" border-round mb-2" process="@this" update="@form"
+                              icon="pi pi-arrow-left"  value="Volver" action="principal?faces-redirect=true">
+                 <f:param name="estiloRecibido" value="#{planchaTintoreriaBean.estiloRecibido}" />                 
+                 
+             </p:commandButton>
+            <div class="flex justify-content-center" >
+                <div class="card flex align-items-start justify-content-center w-10" >
+                    <div class="card-container w-6 ml-4">
+                        <div class="flex align-items-start justify-content-start">
+                            <p:outputLabel value="Estilo" class="font-medium text-xl m-2"/>
+                            <p:outputLabel value="#{planchaTintoreriaBean.estilo.estilo}" class="font-medium text-xl m-2"/>
+                        </div>
+                        <div class="flex align-items-center justify-content-start">
+                            <p:outputLabel value="Referencia:" class="m-2"/>
+                            <p:outputLabel id="inRef" value="#{planchaTintoreriaBean.estilo.referencias}" class="m-2 w-7" />
+                        </div>
+                        <p:divider />
+                        <div class="flex align-items-center justify-content-start">
+                            <p:outputLabel value="Tipo de plancha" class="m-2 w-8rem"/>
+                            <p:selectOneMenu id="somPlancha" value="#{planchaTintoreriaBean.planchaTintoreria.tipoPlancha}"
+                                             class="m-2 w-7" autoWidth="false">
+                                <f:selectItem itemLabel="Takatory" itemValue="Takatory"/>
+                                <f:selectItem itemLabel="Eléctrica" itemValue="Eléctrica"/>
+                                <f:selectItem itemLabel="No aplica" itemValue="No aplica"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="flex align-items-center justify-content-start">
+                            <p:outputLabel value="Tipo de horma" class="m-2 w-8rem"/>
+                            <p:selectOneMenu id="somHorma" value="#{planchaTintoreriaBean.planchaTintoreria.tipoHorma}"
+                                             class="m-2 w-7" autoWidth="false">
+                                <f:selectItem itemLabel="Prehormado" itemValue="Prehormado"/>
+                                <f:selectItem itemLabel="En U" itemValue="En U"/>
+                                <f:selectItem itemLabel="No aplica" itemValue="No aplica"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="flex align-items-center justify-content-start">
+                            <p:outputLabel value="Presion" class="m-2 w-8rem"/>
+                            <p:inputText value="#{planchaTintoreriaBean.planchaTintoreria.presion}" disabled="#{planchaTintoreriaBean.dsbEdicion}" class="m-2 w-7" />
+                        </div>
+                        <div class="flex align-items-center justify-content-start">
+                            <p:outputLabel value="Temperatura plancha" class="m-2 w-8rem"/>
+                            <p:inputText value="#{planchaTintoreriaBean.planchaTintoreria.temperaturaPlancha}" 
+                                         disabled="#{planchaTintoreriaBean.dsbEdicion}" class="m-2 w-7" />
+                        </div>
+                        <div class="flex align-items-center justify-content-start">
+                            <p:outputLabel value="Velocidad" class="m-2 w-8rem"/>
+                            <p:inputText value="#{planchaTintoreriaBean.planchaTintoreria.velocidad}" 
+                                         disabled="#{planchaTintoreriaBean.dsbEdicion}" class="m-2 w-7" />
+                        </div>
+                        <div class="flex align-items-center justify-content-start">
+                            <p:outputLabel value="Tiempo prehormado" class="m-2 w-8rem"/>
+                            <p:inputText value="#{planchaTintoreriaBean.planchaTintoreria.tiempoHormado}" 
+                                         disabled="#{planchaTintoreriaBean.dsbEdicion}" class="m-2 w-7" />
+                        </div>
+                        
+                        <div class="flex align-items-center justify-content-start">
+                            <p:outputLabel value="Tipo de secado" class="m-2 w-8rem"/>
+                            <p:selectOneMenu id="somPart" value="#{planchaTintoreriaBean.planchaTintoreria.tipoSecado}"
+                                             class="m-2 w-7" autoWidth="false">
+                                <f:selectItem itemLabel="Tomber" itemValue="Tomber"/>
+                                <f:selectItem itemLabel="Tomber / automático" itemValue="Tomber / automático"/>
+                                <f:selectItem itemLabel="Horno" itemValue="Horno"/>
+                                <f:selectItem itemLabel="Temp/Ambiente" itemValue="Temp/Ambiente"/>
+                                <f:selectItem itemLabel="No aplica" itemValue="No aplica"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="flex align-items-center justify-content-start">
+                            <p:outputLabel value="Tiempo secado" class="m-2 w-8rem"/>
+                            <p:inputText value="#{planchaTintoreriaBean.planchaTintoreria.tiempoSecado}" 
+                                         disabled="#{planchaTintoreriaBean.dsbEdicion}" class="m-2 w-7" />
+                        </div>
+                        <div class="flex align-items-center justify-content-start">
+                            <p:outputLabel value="Temperatura secado" class="m-2 w-8rem"/>
+                            <p:inputText value="#{planchaTintoreriaBean.planchaTintoreria.temperatura}" 
+                                         disabled="#{planchaTintoreriaBean.dsbEdicion}" class="m-2 w-7" />
+                        </div>
+                        <div class="flex align-items-start justify-content-start">
+                            <p:outputLabel value="Observaciones" class="m-2 w-8rem"/>
+                            <p:inputTextarea value="#{planchaTintoreriaBean.planchaTintoreria.observaciones}" 
+                                             disabled="#{planchaTintoreriaBean.dsbEdicion}" class="m-2 w-7" />
+                        </div>
+                        <div class="flex align-items-start justify-content-end m-2 mr-6">
+                            <p:commandButton value="Guardar"
+                                             process="@this,@form"                          
+                                             actionListener="#{planchaTintoreriaBean.guardarReporte()}"
+                                             disabled="#{planchaTintoreriaBean.dsbEdicion}"
+                                             update="msgs"/>
+                        </div>
+                    </div>
+                    <div class="card-container w-6 ml-4" >
+                        <p:dataTable id="dtColor" value="#{planchaTintoreriaBean.colorEstiloList}" 
+                                     var="colorVar" 
+                                     emptyMessage="Sin colores">
+
+                            <p:column headerText="Color">
+                                <h:outputText  value="#{colorVar.idColor.nombre}"/>
+                            </p:column>
+                        </p:dataTable>
+                        <div class="m-3">
+                            <p:commandButton value="Terminar Ficha"
+                                             process="@this" disabled="#{planchaTintoreriaBean.dsbEdicion}"                         
+                                             actionListener="#{planchaTintoreriaBean.terminarFicha()}"
+                                             update="@form"/>
+                            <p:commandButton value="Retomar el proceso" class="ml-2"
+                                             process="@this" disabled="#{planchaTintoreriaBean.dsbEdicion}"                         
+                                             actionListener="#{planchaTintoreriaBean.fichaEnProceso()}"
+                                             update="@form"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <div class="justify-content-center" >
+                <div class="card flex  align-items-center justify-content-center w-10">
+
+                </div>
+            </div>
+            <br/>
+
+        </p:panel>
+    </h:form>
+    <h:form  id="dlgs">
+        <div class="flex justify-content-center" >
+            <div class="card flex align-items-start justify-content-start w-10" >
+                <div class="card-container  w-full">
+                    <p:commandButton value="Imprimir"
+                                     process="@this"                          
+                                     ajax="false" disabled="#{planchaTintoreriaBean.dsbImpresion}"       
+                                     actionListener="#{planchaTintoreriaBean.imprimirReporte()}"
+                                     update="@form"/>
+                </div>
+            </div>
+        </div>
+        <div class="flex align-items-end justify-content-between mt-3">
+            <p:commandButton class="flex border-round m-2" process="@this" update="@form" icon="pi pi-arrow-left"
+                          value="Control de medidas" action="#{planchaTintoreriaBean.redirect('control_medidas')}"/>
+            <p:commandButton class="flex border-round m-2" process="@this" update="@form" icon="pi pi-home" iconPos="right"
+                          value="Inicio" action="principal?faces-redirect=true"/>
+        </div>
+    </h:form>
+</html>

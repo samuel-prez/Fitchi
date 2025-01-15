@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="proceso_confeccion" printOrder="Horizontal" pageWidth="612" pageHeight="792" columnWidth="582" leftMargin="15" rightMargin="15" topMargin="15" bottomMargin="15" isSummaryWithPageHeaderAndFooter="true" isFloatColumnFooter="true" uuid="c63ad8ec-e4db-4b5f-bfd8-9f26a52ef47b">
+	<property name="ireport.zoom" value="1.6105100000000054"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ID_ESTILO" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\RITCHI\\Documents\\NetBeansProjects\\fitchi\\src\\main\\webapp\\reports\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select u.usuario, c.creado, es.estilo, es.referencias, c.imagen,c.cantidad_bulto,
+c.cantidad_talego, c.observaciones
+from proceso_confeccion c
+LEFT JOIN usuario u on c.id_creado = u.id_usuario
+LEFT JOIN estilo es on c.id_estilo = es.id_estilo
+ where c.id_estilo = $P{ID_ESTILO}]]>
+	</queryString>
+	<field name="usuario" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="creado" class="java.util.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="estilo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="referencias" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="imagen" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cantidad_bulto" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cantidad_talego" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="observaciones" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<variable name="fecha_actual" class="java.lang.String">
+		<variableExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date())]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="60" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="462" height="60" forecolor="#FFFFFF" backcolor="#9DBCDC" uuid="f95258a7-bfa1-4fd7-9806-47fedc45eb99"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FICHA TÉCNICA
+PROCESO EN CONFECCIÓN]]></text>
+			</staticText>
+			<image>
+				<reportElement x="462" y="0" width="120" height="60" uuid="c45d6da1-a2f5-4701-bd17-4660e6f0c161"/>
+				<imageExpression><![CDATA["C:\\Users\\RITCHI\\Pictures\\ritchi.jpg"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<detail>
+		<band height="356" splitType="Stretch">
+			<staticText>
+				<reportElement x="10" y="10" width="108" height="15" uuid="1b283f7f-110b-4b6b-a11a-ed6a77bc753b"/>
+				<textElement>
+					<font fontName="SansSerif" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESTILO]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="118" y="10" width="179" height="15" uuid="162c45f3-218d-4833-8134-29e0a93e3c73"/>
+				<box leftPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{estilo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="307" y="10" width="69" height="15" uuid="e7984e55-8b40-47b5-ba35-f328a7984c94"/>
+				<box topPadding="0"/>
+				<textElement>
+					<font fontName="SansSerif" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REFERENCIA]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="376" y="10" width="155" height="15" uuid="eb99fd5e-4ae2-49bf-a41c-fd16b2629573"/>
+				<box leftPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{referencias}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="10" y="30" width="560" height="1" forecolor="#444444" uuid="1a7ed67f-e9bf-4a18-b776-60dd0519b2d9"/>
+			</line>
+			<image scaleImage="RealSize" hAlign="Center" isLazy="true" onErrorType="Blank" evaluationTime="Auto">
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" mode="Opaque" x="10" y="42" width="275" height="309" uuid="1443e9f8-e592-4e48-8b7a-a2684e8ae40f"/>
+				<imageExpression><![CDATA["C:\\Cargues\\Confeccion\\"+$F{imagen}]]></imageExpression>
+			</image>
+			<subreport>
+				<reportElement stretchType="RelativeToTallestObject" x="325" y="42" width="245" height="160" isPrintWhenDetailOverflows="true" uuid="49ac90b2-fd27-411b-b66a-583c8805ba96"/>
+				<subreportParameter name="ID_ESTILO">
+					<subreportParameterExpression><![CDATA[$P{ID_ESTILO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "proceso_confeccion_partes.jasper"]]></subreportExpression>
+			</subreport>
+			<line>
+				<reportElement x="319" y="212" width="255" height="1" forecolor="#444444" uuid="9aa602d8-27c0-4574-8233-5745adbcaf9f"/>
+			</line>
+			<staticText>
+				<reportElement x="325" y="229" width="64" height="15" uuid="482ca756-f470-42ac-b624-52dee0a64c3c"/>
+				<textElement>
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Embalaje]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="325" y="251" width="72" height="15" uuid="4a6fc3cb-e3ba-4388-bc40-161b925f0385"/>
+				<textElement>
+					<font fontName="SansSerif" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Por talego:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="325" y="266" width="72" height="15" uuid="df2b5ff2-154a-44eb-b93d-ad9f8aea887d"/>
+				<textElement>
+					<font fontName="SansSerif" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Por canasto:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="397" y="251" width="98" height="15" uuid="2ccc9120-b865-48e2-bf2a-76130545bf3e"/>
+				<box leftPadding="2">
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cantidad_talego} + " unidades"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="397" y="266" width="98" height="15" uuid="a896097e-f0e3-4e71-a7c7-43f064f5d944"/>
+				<box leftPadding="2">
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cantidad_bulto} + " talegos"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="325" y="281" width="104" height="15" uuid="c2b8717f-0668-44cf-99b3-d51c7593a312"/>
+				<textElement>
+					<font fontName="SansSerif" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Observaciones:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="325" y="296" width="249" height="55" uuid="372ee26a-c706-4bc0-8bc2-bdb873763217"/>
+				<box leftPadding="2">
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{observaciones}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="10" y="0" width="560" height="20" isPrintWhenDetailOverflows="true" backcolor="#C1C1C1" uuid="057f4d18-f49c-4e16-8516-82be22b6e589"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Impreso " + $V{fecha_actual} +  "          		 Creación " + $F{usuario} + " - " + $F{creado}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="90" splitType="Stretch">
+			<subreport>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="582" height="90" isPrintWhenDetailOverflows="true" uuid="332a7527-9532-46ab-a64f-693eb8620480"/>
+				<subreportParameter name="ID_ESTILO">
+					<subreportParameterExpression><![CDATA[$P{ID_ESTILO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "proceso_confeccion_fase.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</summary>
+</jasperReport>

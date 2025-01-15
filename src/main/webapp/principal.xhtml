@@ -1,0 +1,140 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>Fitchi</title>  
+        <link rel="shortcut icon" type="image/png" href="images/favicon.png" />
+        <link rel="stylesheet" href="https://unpkg.com/primeflex@^3/primeflex.css"/>
+    </h:head>
+
+    <style type="text/css">
+
+
+    </style>
+
+    <h:form id="form">
+        <p:growl showDetail="true" id="msgs"  life="1000"/>
+        <p:panel header="Fitchi">
+            <div class="flex m-3" style="height: 60px">
+                <p:menubar class="w-full">
+                    <p:submenu label="Tablas primarias" icon="pi pi-fw pi-file" >
+                        <p:menuitem value="Guia de tallas" icon="pi pi-fw pi-pencil" action="guia_tallas?faces-redirect=true"/>
+                        <p:menuitem value="Material y proveedores" icon="pi pi-fw pi-pencil" disabled="#{principalBean.dsbConsulta}"
+                                    action="crear_material?faces-redirect=true" />
+                        <p:menuitem value="Parámetros" icon="pi pi-fw pi-pencil" disabled="#{principalBean.dsbConsulta}"
+                                    action="crear_parametro?faces-redirect=true" />
+                    </p:submenu>
+
+                    <p:submenu label="Gestión usuarios" disabled="true" icon="pi pi-fw pi-user">
+                        <p:menuitem value="New" icon="pi pi-fw pi-user-plus"/>
+                        <p:menuitem value="Delete" icon="pi pi-fw pi-user-minus"/>
+                        <p:submenu label="Search" icon="pi pi-fw pi-users">
+                            <p:submenu label="Filter" icon="pi pi-fw pi-filter">
+                                <p:menuitem value="Print" icon="pi pi-fw pi-print"/>
+                            </p:submenu>
+                            <p:menuitem value="List" icon="pi pi-fw pi-bars"/>
+                        </p:submenu>
+                    </p:submenu>
+
+                    <p:submenu label="Auditoría" disabled="true" icon="pi pi-fw pi-calendar"/>
+
+                    <p:divider layout="vertical"/>
+
+                    <f:facet name="options">
+                        <div class="ui-input-icon-left mr-2">
+                            <p:outputLabel value="#{principalBean.usuario.usuario}"/>
+                        </div>
+                        <p:commandButton value="Cerrar sesión" icon="pi pi-fw pi-sign-out" action="login?faces-redirect=true"
+                                         update="@form" styleClass="ui-button-info"/>
+                    </f:facet>
+                </p:menubar>
+            </div>
+            <div class="card">
+
+                <div class="flex align-items-center justify-content-start card-container ">
+
+                    <div>
+                        <p:dataTable  id="dtEstilo" value="#{principalBean.listEstilo}"
+                                      selectionMode="single"
+                                      selection="#{principalBean.estilo}"
+                                      paginatorPosition="bottom"
+                                      paginator="true" rows="10"
+                                      var="estiloVar"
+                                      rowKey="#{estiloVar.idEstilo}">
+                            <p:ajax event="rowSelect" listener="#{principalBean.dtEstiloSeleccion()}" process="@this, dtEstilo" update="@form"/>
+                            <p:ajax event="rowUnselect" process="@this, dtEstilo" update="@form"/>
+                            <f:facet name="header" >
+                                Selecciona Estilo
+                            </f:facet>
+                            <p:column headerText="Estilo" filterBy="#{estiloVar.estilo} #{estiloVar.idMarca.nombre}" filterMatchMode="contains">
+                                <h:outputText value="#{estiloVar.estilo} - #{estiloVar.idMarca.nombre}"/>
+                            </p:column>
+                            <p:column headerText="Referencias">
+                                <h:outputText value="#{estiloVar.referencias}"/>
+                            </p:column>
+                            <p:column headerText="Creado por" class="w-2">
+                                <h:outputText value="#{estiloVar.idCreado.nombre} #{estiloVar.idCreado.apellido}"/>
+                            </p:column>
+                            <p:column headerText="Fecha" class="w-2">
+                                <h:outputText value="#{estiloVar.creado}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="GMT-5"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Estado" class="w-2">
+                                <h:outputText value="#{estiloVar.estado}"/>
+                            </p:column>
+
+                        </p:dataTable>
+                    </div>
+                    <div class="flex flex-wrap  align-items-center justify-content-center flex-column card-container">
+                        
+                        <p:commandButton class="flex align-items-center justify-content-center text-center w-15rem border-round mb-2" disabled="#{principalBean.dsbConsulta}"
+                                         value="Datos generales" action="#{principalBean.redirect('datos_generales')}" process="@this, dtEstilo" update="@form"/>
+                        <p:commandButton class="flex align-items-center justify-content-center text-center w-15rem border-round mb-2" disabled="#{principalBean.dsbConsulta}"
+                                         value="Lista de materiales" action="#{principalBean.redirect('lista_materiales')}" process="@this, dtEstilo" update="@form"/>
+                        <p:commandButton class="flex align-items-center justify-content-center text-center w-15rem border-round mb-2" disabled="#{principalBean.dsbConsulta}"
+                                         value="Tejido en circulares" action="#{principalBean.redirect('tejido_circulares')}" process="@this, dtEstilo" update="@form"/>
+                        <p:commandButton class="flex align-items-center justify-content-center text-center w-15rem border-round mb-2" disabled="#{principalBean.dsbConsulta}"
+                                         value="Parámetros de tallaje" action="#{principalBean.redirect('parametro_tallaje')}" process="@this, dtEstilo" update="@form"/>
+                        <p:commandButton class="flex align-items-center justify-content-center text-center w-15rem border-round mb-2" disabled="#{principalBean.dsbConsulta}"
+                                         value="Procesos de confección" action="#{principalBean.redirect('proceso_confeccion')}" process="@this, dtEstilo" update="@form"/>
+                        <p:commandButton class="flex align-items-center justify-content-center text-center w-15rem border-round mb-2" disabled="#{principalBean.dsbConsulta}"
+                                         value="Proceso de acabados" action="#{principalBean.redirect('proceso_acabado')}" process="@this, dtEstilo" update="@form"/>
+                        <p:commandButton class="flex align-items-center justify-content-center text-center w-15rem border-round mb-2" disabled="#{principalBean.dsbConsulta}"
+                                         value="Insumos terceros" action="#{principalBean.redirect('insumo_tercero')}" process="@this, dtEstilo" update="@form"/>
+                        <p:commandButton class="flex align-items-center justify-content-center text-center w-15rem border-round mb-2" disabled="#{principalBean.dsbConsulta}"
+                                         value="Control de medidas" action="#{principalBean.redirect('control_medidas')}" process="@this, dtEstilo" update="@form"/>
+                        <p:commandButton class="flex align-items-center justify-content-center text-center w-15rem border-round mb-2" process="@this, dtEstilo" update="@form"
+                                         disabled="#{principalBean.dsbConsulta}" value="Proceso de plancha y tintorería" action="#{principalBean.redirect('plancha_tintoreria')}"/>
+                    </div>
+                </div>
+            </div>
+        </p:panel>
+
+        <p:commandButton value="Crear Ficha"  actionListener="#{principalBean.abrirDlgCrearFicha}" process="@this" update="dlgs:creFich"
+                         class="m-3"/>
+        <p:commandButton value="Copiar Ficha" process="@this, dtEstilo" update="@form" 
+                         disabled="false" action="copiar_ficha?faces-redirect=true"/>
+    </h:form>
+    <h:form id="dlgs" >
+
+        <p:dialog header="Crear Ficha" widgetVar="dlgCrearFicha" id="creFich" modal="true">
+
+            <h:panelGrid columns="1">
+                <p:outputLabel for="est" value="Estilo"/>
+                <p:inputText id="est" value="#{principalBean.estiloNuevo.estilo}" />
+
+                <p:outputLabel for="ref" value="Referencia"/>
+                <p:inputText id="ref" value="#{principalBean.estiloNuevo.referencias}" />
+
+                <p:commandButton value="Crear" actionListener="#{principalBean.crearFicha()}" process="@this, est,ref" update="form:dtEstilo,form:msgs" 
+                                 class="mt-2"/>
+            </h:panelGrid>
+
+        </p:dialog>
+
+
+    </h:form>
+</html>

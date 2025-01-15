@@ -1,0 +1,217 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>Control Medidas</title>  
+        <link rel="shortcut icon" type="image/png" href="images/favicon.png" />
+        <link rel="stylesheet" href="https://unpkg.com/primeflex@^3/primeflex.css"/>
+    </h:head>
+
+    <style type="text/css">
+
+    </style>
+
+    <h:form id="form">
+        <p:growl showDetail="true" id="msgs" />
+        <p:panel header="Control de medidas" >
+            <div class="flex justify-content-center" >
+                <div class="card flex align-items-start justify-content-center w-11" >
+                    <div class="card-container w-5 ml-4">
+                        <div class="flex align-items-start justify-content-start">
+                            <p:outputLabel value="Estilo" class="font-medium text-xl m-2"/>
+                            <p:outputLabel value="#{controlMedidasBean.estilo.estilo}" class="font-medium text-xl m-2"/>
+                        </div>
+                        <div class="flex align-items-center justify-content-start">
+                            <p:outputLabel value="Referencia:" class="m-2"/>
+                            <p:outputLabel id="inRef" value="#{controlMedidasBean.estilo.referencias}" class="m-2 w-7" />
+                        </div>
+                        <div class="mt-3">
+                            <p:fileUpload mode="advanced"
+                                          multiple="false"  label="Subir imagen" auto="true"
+                                          sizeLimit="10240000" allowTypes="/(\.|\/)(jpg|jpeg|png)$/"
+                                          invalidSizeMessage="Archivo muy pesado" process="@this"
+                                          invalidFileMessage="Formatos aceptados: jpg, jpeg, png."
+                                          update="panImg" disabled="#{controlMedidasBean.dsbEdicion}"
+                                          listener="#{controlMedidasBean.handleFileUpload}"/>
+                        </div>
+                        <div class="card mt-2" id="divImg">
+                            <h:panelGroup id="panImg">
+                                <p:graphicImage value="http://192.0.0.121:8080/Fitchi/Cargues/Medidas/#{controlMedidasBean.controlMedidas.imagen}" class="w-full"
+                                                rendered="#{controlMedidasBean.controlMedidas.imagen == null ? false : true}" id="imgEst"/>
+                            </h:panelGroup>
+                        </div>
+                        <p:divider />
+                        <div class="">
+                            <p:outputLabel value="Observaciones:"/>
+                        </div>
+                        <div class="">
+                            <p:inputTextarea id="itObs" value="#{controlMedidasBean.controlMedidas.observaciones}" class="w-full" />
+                        </div>
+                        <div class="m-2">
+                            <p:commandButton value="Guardar" class="" process="@this,itObs" disabled="#{controlMedidasBean.dsbEdicion}"                   
+                                             actionListener="#{controlMedidasBean.guardarObs()}" 
+                                             update="msgs"/>
+                        </div>
+                    </div>
+                    <div class="card-container w-7 ml-4" >
+                        <p:dataTable id="dtTalla" value="#{controlMedidasBean.tallaEstiloList}" rowKey="#{tallaVar.idTallaEstilo}"
+                                     var="tallaVar" selectionMode="single" selection="#{controlMedidasBean.tallaEstilo}"
+                                     emptyMessage="Sin tallas" size="small">
+                            <p:ajax event="rowSelect" listener="#{controlMedidasBean.dtTallaSeleccion()}" process="@this, dtTalla"
+                                    update="dtTalla,form:dtParametro"/>
+                            <p:ajax event="rowUnselect" process="@this, dtTalla" update="dtTalla,form:dtParametro"/>
+                            <p:column headerText="Talla">
+                                <h:outputText  value="#{tallaVar.idTalla.nombre}"/>
+                            </p:column>
+                        </p:dataTable>
+                        <br/>
+                        <p:dataTable id="dtParametro" value="#{controlMedidasBean.controlMedidasTallaList}" selectionMode="single"
+                                     var="parametroVar" size="small" draggableRows="#{!controlMedidasBean.dsbEdicion}"
+                                     emptyMessage="Sin datos..." selection="#{controlMedidasBean.controlMedidasTalla}"
+                                     rowKey="#{parametroVar.idControlMedidasTalla}">
+                            <p:ajax event="rowReorder" listener="#{controlMedidasBean.onRowReorderRevision}" update="dtParametro"/>
+                            <p:ajax event="rowSelect" process="@this, dtParametro" update="btnParametroEdi"/>
+                            <p:ajax event="rowUnselect" process="@this, dtParametro" update="btnParametroEdi"/>
+                            <p:column headerText="Orden" style="width:40px">
+                                <h:outputText  value="#{parametroVar.orden + 1}"/>
+                            </p:column>
+                            <p:column headerText="Medida a controlar" class="w-4">
+                                <h:outputText  value="#{parametroVar.idControlMedidasParametro.nombre}"/>
+                            </p:column>
+                            <p:column headerText="Confección" style="width:90px">
+                                <h:outputText   value="#{parametroVar.confeccion}">
+                                    <f:convertNumber groupingUsed="true" minFractionDigits="0" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Toler." class="">
+                                <h:outputText  value="#{parametroVar.confeccionTolerancia}"/>
+                            </p:column>
+                            <p:column headerText="Acabado" style="width:90px">
+                                <h:outputText  value="#{parametroVar.acabado}">
+                                    <f:convertNumber groupingUsed="true" minFractionDigits="0" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Toler." class="">
+                                <h:outputText  value="#{parametroVar.acabadoTolerancia}"/>
+                            </p:column>
+                            <p:column style="width:3rem;text-align: center">
+                                <p:commandButton update="dtParametro" action="#{controlMedidasBean.borrarControlMedidaTalla()}" 
+                                                 process="@this,dtParametro" icon="pi pi-times" title="Borrar control"  disabled="#{controlMedidasBean.dsbEdicion}">
+                                    <f:setPropertyActionListener value="#{parametroVar}" target="#{controlMedidasBean.controlMedidasTallaSeleccionado}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <f:facet name="footer" >
+                                <p:commandButton value="Añadir"  process="@this" update="dlgs:dlgPar" actionListener="#{controlMedidasBean.abrirDlgParametro()}"
+                                                 disabled="#{controlMedidasBean.tallaEstilo eq null or controlMedidasBean.dsbEdicion}"/>
+                                <p:commandButton value="Editar" process="@this" update="dlgs:dlgParEdi" actionListener="#{controlMedidasBean.abrirDlgParametroEditar()}"
+                                                 disabled="#{controlMedidasBean.controlMedidasTalla.idControlMedidasTalla eq null or controlMedidasBean.dsbEdicion}"
+                                                 class="ml-2" id="btnParametroEdi"/>
+                            </f:facet>
+                        </p:dataTable>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <div class="justify-content-center" >
+                <div class="card flex  align-items-center justify-content-center w-10">
+
+                </div>
+            </div>
+            <br/>
+
+        </p:panel>
+    </h:form>
+    <h:form  id="dlgs">
+        <p:dialog  header="Añadir parámetro" modal="true" id="dlgPar" widgetVar="dlgParametro"  >
+
+            <h:panelGrid columns="9" style="width: 100%; align-content: center">
+                <p:selectOneMenu id="somPar" value="#{controlMedidasBean.controlMedidasTalla.idControlMedidasParametro}"
+                                 filter="true" converter="entityConverter" filterMatchMode="contains" class="">
+                    <f:selectItem itemLabel="Seleccione parámetro" />
+                    <f:selectItems value="#{controlMedidasBean.controlMedidasParametroList}" var="paraVar"
+                                   itemValue="#{paraVar}"
+                                   itemLabel="#{paraVar.nombre}"/>
+                </p:selectOneMenu>
+                <p:divider layout="vertical"/>
+                <p:inputNumber id="itCon" value="#{controlMedidasBean.controlMedidasTalla.confeccion}" size="8" placeholder="Confección"/>
+                <p:divider layout="vertical"/>
+                <p:selectOneMenu id="somCon" value="#{controlMedidasBean.controlMedidasTalla.confeccionTolerancia}"
+                                 class="" >
+                    <f:selectItem itemLabel="Conf. tolerancia" />
+                    <f:selectItem itemLabel="+/-0.5" itemValue="+/-0.5"/>
+                    <f:selectItem itemLabel="+/-1" itemValue="+/-1"/>
+                    <f:selectItem itemLabel="+/-2" itemValue="+/-2"/>
+                </p:selectOneMenu>
+                <p:divider layout="vertical"/>
+                <p:inputNumber id="itAca" value="#{controlMedidasBean.controlMedidasTalla.acabado}" size="8" placeholder="Acabado"/>
+                <p:divider layout="vertical"/>
+                <p:selectOneMenu id="somAca" value="#{controlMedidasBean.controlMedidasTalla.acabadoTolerancia}"
+                                 filter="true" class="">
+                    <f:selectItem itemLabel="Acab. tolerancia" />
+                    <f:selectItem itemLabel="+/-0.5" itemValue="+/-0.5"/>
+                    <f:selectItem itemLabel="+/-1" itemValue="+/-1"/>
+                    <f:selectItem itemLabel="+/-2" itemValue="+/-2"/>
+                </p:selectOneMenu>
+                <p:commandButton value="Guardar" actionListener="#{controlMedidasBean.guardarControlMedidasTalla()}"
+                                 class="mt-3" process="@this,somPar,itCon,somCon,itAca,somAca" update="form:dtParametro,dlgPar,form:msgs"/>
+            </h:panelGrid>            
+
+        </p:dialog>
+        <p:dialog  header="Editar parámetro" modal="true" id="dlgParEdi" widgetVar="dlgParametroEditar"  >
+
+            <h:panelGrid columns="9" style="width: 100%; align-content: center">
+                <p:selectOneMenu value="#{controlMedidasBean.controlMedidasTalla.idControlMedidasParametro}"
+                                 filter="true" converter="entityConverter" filterMatchMode="contains" class="">
+                    <f:selectItem itemLabel="Seleccione parámetro" />
+                    <f:selectItems value="#{controlMedidasBean.controlMedidasParametroList}" var="paraVar"
+                                   itemValue="#{paraVar}"
+                                   itemLabel="#{paraVar.nombre}"/>
+                </p:selectOneMenu>
+                <p:divider layout="vertical"/>
+                <p:inputNumber value="#{controlMedidasBean.controlMedidasTalla.confeccion}" size="8" placeholder="Confección"/>
+                <p:divider layout="vertical"/>
+                <p:selectOneMenu value="#{controlMedidasBean.controlMedidasTalla.confeccionTolerancia}"
+                                 class="" >
+                    <f:selectItem itemLabel="Conf. tolerancia" />
+                    <f:selectItem itemLabel="+/-0.5" itemValue="+/-0.5"/>
+                    <f:selectItem itemLabel="+/-1" itemValue="+/-1"/>
+                    <f:selectItem itemLabel="+/-2" itemValue="+/-2"/>
+                </p:selectOneMenu>
+                <p:divider layout="vertical"/>
+                <p:inputNumber value="#{controlMedidasBean.controlMedidasTalla.acabado}" size="8" placeholder="Acabado"/>
+                <p:divider layout="vertical"/>
+                <p:selectOneMenu value="#{controlMedidasBean.controlMedidasTalla.acabadoTolerancia}"
+                                 filter="true" class="">
+                    <f:selectItem itemLabel="Acab. tolerancia" />
+                    <f:selectItem itemLabel="+/-0.5" itemValue="+/-0.5"/>
+                    <f:selectItem itemLabel="+/-1" itemValue="+/-1"/>
+                    <f:selectItem itemLabel="+/-2" itemValue="+/-2"/>
+                </p:selectOneMenu>
+                <p:commandButton value="Guardar" actionListener="#{controlMedidasBean.guardarControlMedidasTallaEditar()}"
+                                 class="mt-3" process="@this,dlgParEdi" update="form:dtParametro,dlgParEdi,form:msgs"/>
+            </h:panelGrid>            
+
+        </p:dialog>
+        <div class="flex justify-content-center" >
+            <div class="card flex align-items-start justify-content-start w-10" >
+                <div class="card-container  w-full">
+                    <p:commandButton value="Imprimir"
+                                     process="@this"                          
+                                     ajax="false" disabled="#{controlMedidasBean.dsbImpresion}"
+                                     actionListener="#{controlMedidasBean.imprimirReporte()}"
+                                     update="@form"/>
+                </div>
+            </div>
+        </div>
+        <div class="flex align-items-end justify-content-between mt-3">
+            <p:commandButton class="flex border-round m-2" process="@this" update="@form" icon="pi pi-arrow-left"
+                             value="Insumos terceros" action="#{controlMedidasBean.redirect('insumo_tercero')}"/>
+            <p:commandButton class="flex border-round m-2" process="@this" update="@form" icon="pi pi-home" iconPos="right"
+                             value="Inicio" action="principal?faces-redirect=true"/>
+            <p:commandButton class="flex border-round m-2" process="@this" update="@form" icon="pi pi-arrow-right" iconPos="right"
+                             value="Proceso de plancha y tintorería" action="#{controlMedidasBean.redirect('plancha_tintoreria')}"/>
+        </div>
+    </h:form>
+</html>

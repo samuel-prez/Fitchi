@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="control_medidas_talla" pageWidth="575" pageHeight="572" orientation="Landscape" columnWidth="575" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="bc9e9aaf-d70d-458d-98d2-0ae380f19d2d">
+	<property name="ireport.zoom" value="1.4641000000000044"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ID_ESTILO" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\RITCHI\\Documents\\NetBeansProjects\\fitchi\\src\\main\\webapp\\reports\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select  t.nombre as talla,cm.id_control_medidas,te.id_talla_estilo
+from talla_estilo te
+join talla t on t.id_talla = te.id_talla
+left join control_medidas cm on cm.id_estilo = te.id_estilo
+where te.id_estilo = $P{ID_ESTILO}]]>
+	</queryString>
+	<field name="talla" class="java.lang.String"/>
+	<field name="id_control_medidas" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="id_talla_estilo" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<group name="grupo_tallas">
+		<groupExpression><![CDATA[$F{talla}]]></groupExpression>
+		<groupHeader>
+			<band height="28" splitType="Stretch">
+				<staticText>
+					<reportElement x="54" y="6" width="88" height="22" uuid="fb75cfce-8ca2-4380-b043-60b96708009b"/>
+					<box topPadding="3" leftPadding="3">
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[TALLA]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="142" y="6" width="69" height="22" isPrintWhenDetailOverflows="true" uuid="36fc30f9-b806-41f1-9cb0-db671955c74a"/>
+					<box topPadding="3" leftPadding="3">
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{talla}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="0" y="0" width="575" height="1" forecolor="#444444" uuid="5fc39585-b98f-4bea-83fb-df97915c0ee5"/>
+				</line>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="156" splitType="Stretch">
+				<subreport>
+					<reportElement stretchType="RelativeToTallestObject" x="54" y="0" width="521" height="152" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="047f1a11-c70f-4952-853e-e0ef2394fec9"/>
+					<subreportParameter name="ID_CONTROL_MEDIDAS">
+						<subreportParameterExpression><![CDATA[$F{id_control_medidas}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ID_TALLA_ESTILO">
+						<subreportParameterExpression><![CDATA[$F{id_talla_estilo}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "control_medidas_talla_detalle.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+</jasperReport>

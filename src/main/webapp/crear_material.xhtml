@@ -1,0 +1,144 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>Crear material</title>  
+        <link rel="shortcut icon" type="image/png" href="images/favicon.png" />
+        <link rel="stylesheet" href="https://unpkg.com/primeflex@^3/primeflex.css"/>
+    </h:head>
+
+    <style type="text/css">
+
+
+    </style>
+
+    <h:form id="form">
+        <p:growl showDetail="true" id="msgs" />
+        <p:panel header="Creación de materiales y proveedores">
+            <div class="card">
+
+                <div class="flex align-items-start justify-content-start card-container ">
+
+                    <div >
+                        <p:dataTable  id="dtMaterial" value="#{crearMaterialBean.materialList}"
+                                      paginatorPosition="bottom"
+                                      paginator="true" rows="10" size="small"
+                                      var="materialVar" >
+                            <f:facet name="header" >
+                                Materiales
+                            </f:facet>
+                            <p:column headerText="Codigo" class="w-1" filterBy="#{materialVar.codigo}" filterMatchMode="contains">
+                                <h:outputText value="#{materialVar.codigo}" />
+                            </p:column>
+                            <p:column headerText="Nombre" filterBy="#{materialVar.nombre}" filterMatchMode="contains">
+                                <h:outputText value="#{materialVar.nombre}" />
+                            </p:column>
+                            <p:column headerText="Proveedor" class="w-3" filterBy="#{materialVar.idProveedor.nombre}" filterMatchMode="contains">
+                                <h:outputText value="#{materialVar.idProveedor.nombre}"/>
+                            </p:column>
+                            <p:column headerText="Unidad" class="w-1">
+                                <h:outputText value="#{materialVar.idUnidad.nombre}"/>
+                            </p:column>
+                            <p:column headerText="Área" class="w-1">
+                                <h:outputText value="#{materialVar.idArea.nombre}"/>
+                            </p:column>
+                            <f:facet name="footer" >
+                                <p:commandButton value="Crear material"  actionListener="#{crearMaterialBean.abrirCrearMaterial}" id="btnCreMat"
+                                                 process="@this" update="dlgs:creMat" class="m-1"/>
+                            </f:facet>
+                        </p:dataTable>
+                    </div>
+                    
+                </div>
+                <p:divider />
+                <div class="flex align-items-start justify-content-start card-container ">
+                    <div >
+                        <p:dataTable  id="dtProveedor" value="#{crearMaterialBean.proveedorList}"
+                                      paginatorPosition="bottom"
+                                      paginator="true" rows="10" size="small"
+                                      var="proveedorVar" >
+                            <f:facet name="header" >
+                                Proveedores
+                            </f:facet>
+                            <p:column headerText="Nombre" filterBy="#{proveedorVar.nombre}" filterMatchMode="contains">
+                                <h:outputText value="#{proveedorVar.nombre}" />
+                            </p:column>
+                            <p:column headerText="NIT" class="w-4" filterBy="#{proveedorVar.nit}" filterMatchMode="contains">
+                                <h:outputText value="#{proveedorVar.nit}"/>
+                            </p:column>
+                            <f:facet name="footer" >
+                                <p:commandButton value="Crear proveedor"  actionListener="#{crearMaterialBean.abrirCrearProveedor}" id="btnCrePro"
+                                                 process="@this" update="dlgs:crePro" class="m-1"/>
+                            </f:facet>
+                        </p:dataTable>
+                    </div>
+                </div>
+            </div>
+        </p:panel>
+
+
+    </h:form>
+    <h:form id="dlgs" >
+
+        <p:dialog header="Nuevo material" widgetVar="dlgCrearMaterial" id="creMat" modal="true">
+
+            <h:panelGrid columns="1">
+                <p:selectOneMenu id="somPro" value="#{crearMaterialBean.material.idProveedor}" converter="entityConverter"
+                                 filter="true" filterMatchMode="contains" required="true" requiredMessage="Proveedor obligatorio">
+                    <f:selectItem itemLabel="Seleccione proveedor" />
+                    <f:selectItems value="#{crearMaterialBean.proveedorList}" var="proveedorVar"
+                                   itemValue="#{proveedorVar}"
+                                   itemLabel="#{proveedorVar.nombre}"/>
+                </p:selectOneMenu>
+                <p:divider />
+                <h:panelGrid columns="2">
+                    <p:outputLabel value="Código"/>
+                    <p:inputText value="#{crearMaterialBean.material.codigo}" size="8"/>
+
+                    <p:outputLabel value="Nombre"/>
+                    <p:inputText value="#{crearMaterialBean.material.nombre}" size="50"/>
+                </h:panelGrid>
+
+                <p:divider />
+                <p:selectOneMenu id="somUni" value="#{crearMaterialBean.material.idUnidad}" converter="entityConverter"
+                                 filter="true" filterMatchMode="contains" required="true" requiredMessage="Unidad obligatoria">
+                    <f:selectItem itemLabel="Seleccione unidad" />
+                    <f:selectItems value="#{crearMaterialBean.unidadList}" var="unidadVar"
+                                   itemValue="#{unidadVar}"
+                                   itemLabel="#{unidadVar.nombre}"/>
+                </p:selectOneMenu>
+                <p:divider />
+                <p:selectOneMenu id="somAre" value="#{crearMaterialBean.material.idArea}" converter="entityConverter"
+                                 filter="true" filterMatchMode="contains" required="true" requiredMessage="Área obligatoria">
+                    <f:selectItem itemLabel="Seleccione área" />
+                    <f:selectItems value="#{crearMaterialBean.areaList}" var="areaVar"
+                                   itemValue="#{areaVar}"
+                                   itemLabel="#{areaVar.nombre}"/>
+                </p:selectOneMenu>
+                <p:divider />
+                <p:commandButton value="Crear" actionListener="#{crearMaterialBean.crearMaterial()}"
+                                 class="mt-3" process="@this,creMat" update="form:dtMaterial,creMat,form:msgs"/>
+
+            </h:panelGrid>
+
+        </p:dialog>
+        
+        <p:dialog header="Nuevo proveedor" widgetVar="dlgCrearProveedor" id="crePro" modal="true">
+            <h:panelGrid columns="1">
+                <h:panelGrid columns="2">
+                    <p:outputLabel value="Nombre"/>
+                    <p:inputText value="#{crearMaterialBean.proveedor.nombre}" size="30"/>
+                    
+                    <p:outputLabel value="NIT"/>
+                    <p:inputText value="#{crearMaterialBean.proveedor.nit}" size="15"/>
+                </h:panelGrid>
+                <p:divider />
+                <p:commandButton value="Crear" actionListener="#{crearMaterialBean.crearProveedor()}"
+                                 class="mt-3" process="@this,crePro" update="form:dtProveedor,crePro,form:msgs"/>
+            </h:panelGrid>
+        </p:dialog>
+
+    </h:form>
+</html>

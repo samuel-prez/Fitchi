@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="parametro_tallaje" printOrder="Horizontal" pageWidth="612" pageHeight="792" columnWidth="582" leftMargin="15" rightMargin="15" topMargin="15" bottomMargin="15" isSummaryWithPageHeaderAndFooter="true" isFloatColumnFooter="true" uuid="c63ad8ec-e4db-4b5f-bfd8-9f26a52ef47b">
+	<property name="ireport.zoom" value="1.6105100000000054"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ID_ESTILO" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\RITCHI\\Documents\\NetBeansProjects\\fitchi\\src\\main\\webapp\\reports\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select u.usuario, c.creado, es.estilo, es.referencias
+from parametro_tallaje c
+LEFT JOIN usuario u on c.id_creado = u.id_usuario
+LEFT JOIN estilo es on c.id_estilo = es.id_estilo
+ where c.id_estilo = $P{ID_ESTILO}]]>
+	</queryString>
+	<field name="usuario" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="creado" class="java.util.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="estilo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="referencias" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<variable name="fecha_actual" class="java.lang.String">
+		<variableExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date())]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="60" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="462" height="60" forecolor="#FFFFFF" backcolor="#9DBCDC" uuid="f95258a7-bfa1-4fd7-9806-47fedc45eb99"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FICHA TÉCNICA
+PARAMETROS DE TALLAJE]]></text>
+			</staticText>
+			<image>
+				<reportElement x="462" y="0" width="120" height="60" uuid="c45d6da1-a2f5-4701-bd17-4660e6f0c161"/>
+				<imageExpression><![CDATA["C:\\Users\\RITCHI\\Pictures\\ritchi.jpg"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<detail>
+		<band height="36" splitType="Stretch">
+			<staticText>
+				<reportElement x="10" y="10" width="108" height="15" uuid="1b283f7f-110b-4b6b-a11a-ed6a77bc753b"/>
+				<textElement>
+					<font fontName="SansSerif" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESTILO]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="118" y="10" width="179" height="15" uuid="162c45f3-218d-4833-8134-29e0a93e3c73"/>
+				<box leftPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{estilo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="307" y="10" width="69" height="15" uuid="e7984e55-8b40-47b5-ba35-f328a7984c94"/>
+				<box topPadding="0"/>
+				<textElement>
+					<font fontName="SansSerif" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REFERENCIA]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="376" y="10" width="155" height="15" uuid="eb99fd5e-4ae2-49bf-a41c-fd16b2629573"/>
+				<box leftPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{referencias}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="10" y="30" width="560" height="1" forecolor="#444444" uuid="1a7ed67f-e9bf-4a18-b776-60dd0519b2d9"/>
+			</line>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="10" y="0" width="560" height="20" isPrintWhenDetailOverflows="true" backcolor="#C1C1C1" uuid="057f4d18-f49c-4e16-8516-82be22b6e589"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Impreso " + $V{fecha_actual} +  "          		 Creación " + $F{usuario} + " - " + $F{creado}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="24" splitType="Stretch">
+			<subreport isUsingCache="false">
+				<reportElement isPrintRepeatedValues="false" x="0" y="0" width="582" height="24" isPrintWhenDetailOverflows="true" uuid="332a7527-9532-46ab-a64f-693eb8620480"/>
+				<subreportParameter name="ID_ESTILO">
+					<subreportParameterExpression><![CDATA[$P{ID_ESTILO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "parametro_tallaje_talla.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</summary>
+</jasperReport>

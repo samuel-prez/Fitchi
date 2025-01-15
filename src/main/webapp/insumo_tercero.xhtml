@@ -1,0 +1,180 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>Insumo terceros</title>  
+        <link rel="shortcut icon" type="image/png" href="images/favicon.png" />
+        <link rel="stylesheet" href="https://unpkg.com/primeflex@^3/primeflex.css"/>
+    </h:head>
+
+    <style type="text/css">
+
+    </style>
+
+    <h:form id="form">
+        <p:growl showDetail="true" id="msgs" />
+        <p:panel header="Insumo / terceros" >
+            <div class="flex justify-content-center" >
+                <div class="card flex align-items-start justify-content-start w-9" >
+                    <div class="card-container w-6 ml-4">
+                        <div class="flex align-items-start justify-content-start">
+                            <p:outputLabel value="Estilo" class="font-medium text-xl m-2"/>
+                            <p:outputLabel value="#{insumoTerceroBean.estilo.estilo}" class="font-medium text-xl m-2"/>
+                            <p:outputLabel value="Referencia:" class="font-medium text-xl m-2"/>
+                            <p:outputLabel id="inRef" value="#{insumoTerceroBean.estilo.referencias}" class="font-medium text-xl m-2" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <div class=" flex justify-content-center align-items-center" >
+                <div class="align-items-center justify-content-center w-10">
+                    <p:fieldset legend="Insumos">
+                        <div class="flex align-items-center m-2 justify-content-center">
+                            <p:selectOneMenu id="somMat" value="#{insumoTerceroBean.insumoTercero.idMaterialEstilo}" class="w-9 m-1"  filter="true"
+                                             converter="entityConverter" filterMatchMode="contains" autoWidth="false" required="true" requiredMessage="Material obligatorio">
+                                <f:selectItem itemLabel="Material y proveedor" itemValue="#{null}"/>
+                                <f:selectItems value="#{insumoTerceroBean.materialEstiloConfeccionList}"
+                                               var="materialVar"
+                                               itemValue="#{materialVar}"
+                                               itemLabel="#{materialVar.idMaterial.nombre} - #{materialVar.idMaterial.idProveedor.nombre}"/>   
+                            </p:selectOneMenu>
+                            <p:inputText id="itTall" value="#{insumoTerceroBean.insumoTercero.talla}"  placeholder="Tallas" required="true"
+                                         class="m-1 w-1" requiredMessage="La talla es obligatoria"/>
+                            <p:commandButton value="Añadir" process="@this,somMat,itTall"
+                                             update="dtMaterial,somMat" disabled="#{insumoTerceroBean.dsbEdicion}"
+                                             class="m-1" actionListener="#{insumoTerceroBean.añadirMaterial()}"/>
+                        </div>
+                        <p:dataTable  id="dtMaterial" var="materialV" value="#{insumoTerceroBean.insumoTerceroList}"
+                                      emptyMessage="Sin insumos..." size="small" selection="#{insumoTerceroBean.insumoTerceroSeleccionado}"
+                                      selectionMode="single" rowKey="#{materialV.idInsumoTercero}" > 
+                            <p:ajax event="rowSelect" listener="#{insumoTerceroBean.dtMaterialSelect()}" process="@this, dtMaterial"
+                                    update="form:datos,form:img,form:panImg"/>
+                            <p:ajax event="rowUnselect" listener="#{insumoTerceroBean.dtMaterialUnSelect()}" process="@this, dtMaterial" 
+                                    update="form:datos,form:img,form:panImg"/>
+                            <p:column headerText="Material" class="">
+                                <h:outputText  value="#{materialV.idMaterialEstilo.idMaterial.nombre}"/>
+                            </p:column>
+                            <p:column headerText="Proveedor" class="w-3">
+                                <h:outputText  value="#{materialV.idMaterialEstilo.idMaterial.idProveedor.nombre}"/>
+                            </p:column>  
+                            <p:column headerText="Talla" class="w-1">
+                                <h:outputText  value="#{materialV.talla}"/>
+                            </p:column> 
+                            <p:column style="width:3rem;text-align: center">
+                                <p:commandButton update="dtMaterial" action="#{insumoTerceroBean.borrarInsumo()}" disabled="#{insumoTerceroBean.dsbEdicion}"
+                                                 process="@this,dtMaterial" icon="pi pi-times" title="Borrar">
+                                    <f:setPropertyActionListener value="#{materialV}"
+                                                                 target="#{insumoTerceroBean.insumoTerceroSeleccionado}"/>
+                                    <p:confirm header="Confirmación" message="¿Está segura de borrar el registro?" icon="pi pi-info-circle"/>
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+                            <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes" />
+                        </p:confirmDialog>
+                    </p:fieldset>
+
+                </div>
+            </div>
+            <br/>
+
+            <h:panelGroup id="datos" class="w-full">
+                <div class="flex justify-content-center" >
+                    <div class="card-container flex align-items-start justify-content-center w-9">
+                        <div class="card w-6 ml-4">
+                            <div class="flex align-items-center justify-content-start">
+                                <p:outputLabel value="Rendimiento" class="m-1 w-8rem"/>
+                                <p:inputText id="itRen" value="#{insumoTerceroBean.insumoTerceroSeleccionado.rendimiento}"
+                                             class="m-1 w-7" disabled="#{insumoTerceroBean.disableDatos}"/>
+                            </div>
+                            <div class="flex align-items-center justify-content-start">
+                                <p:outputLabel value="Ancho útil" class="m-1 w-8rem"/>
+                                <p:inputText id="itAnch" value="#{insumoTerceroBean.insumoTerceroSeleccionado.anchoUtil}"
+                                             class="m-1 w-7" disabled="#{insumoTerceroBean.disableDatos}"/>
+                            </div>
+                            <div class="flex align-items-center justify-content-start">
+                                <p:outputLabel value="Consumo por prenda" class="m-1 w-8rem"/>
+                                <p:inputText id="itCon" value="#{insumoTerceroBean.insumoTerceroSeleccionado.consumoPorPrenda}"
+                                             class="m-1 w-7" disabled="#{insumoTerceroBean.disableDatos}"/>
+                            </div>
+                            <div class="flex align-items-center justify-content-start">
+                                <p:outputLabel value="Trazo" class="m-1 w-8rem"/>
+                                <p:inputText id="itTra" value="#{insumoTerceroBean.insumoTerceroSeleccionado.trazo}"
+                                             class="m-1 w-7" disabled="#{insumoTerceroBean.disableDatos}"/>
+                            </div>
+                            <div class="flex align-items-center justify-content-start">
+                                <p:outputLabel value="Aprovechamiento" class="m-1 w-8rem"/>
+                                <p:inputText id="itApr" value="#{insumoTerceroBean.insumoTerceroSeleccionado.aprovechamiento}"
+                                             class="m-1 w-7" disabled="#{insumoTerceroBean.disableDatos}"/>
+                            </div>
+                        </div>
+                        <div class="card w-6 ml-4" >
+                            <div class="flex align-items-center justify-content-start">
+                                <p:outputLabel value="Largo trazo" class="m-1 w-8rem"/>
+                                <p:inputText id="itLar" value="#{insumoTerceroBean.insumoTerceroSeleccionado.largoTrazo}"
+                                             class="m-1 w-7" disabled="#{insumoTerceroBean.disableDatos}"/>
+                            </div>
+                            <div class="mt-2">
+                                <p:outputLabel value="Observaciones:" class="m-1 " />
+                                <p:inputTextarea id="itObs" value="#{insumoTerceroBean.insumoTerceroSeleccionado.observaciones}"
+                                                 class="m-1 w-full" disabled="#{insumoTerceroBean.disableDatos}"/>
+                            </div>
+                            <div class="mt-2">
+                                <p:commandButton value="Guardar" actionListener="#{insumoTerceroBean.guardarInsumo()}" 
+                                                process="@this,datos" update="msgs"  disabled="#{insumoTerceroBean.disableDatos or insumoTerceroBean.dsbEdicion}"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </h:panelGroup>
+
+            <br/>
+            <div class="flex justify-content-center align-items-center " >
+                <div class="w-10">
+                    <p:fileUpload mode="advanced" disabled="#{insumoTerceroBean.disableDatos or insumoTerceroBean.dsbEdicion}"
+                                  multiple="false"  label="Subir foto" auto="true" id="img"
+                                  sizeLimit="10240000" allowTypes="/(\.|\/)(jpg|jpeg|png)$/"
+                                  invalidSizeMessage="Archivo muy pesado" process="@this" 
+                                  invalidFileMessage="Formatos aceptados: jpg, jpeg, png."
+                                  update="panImg"
+                                  listener="#{insumoTerceroBean.handleFileUpload}"/>
+                </div>
+            </div>
+            <div class="flex justify-content-center align-items-center " >
+                <div class="card mt-2 w-10" id="divImg">
+                    <h:panelGroup id="panImg">
+                        <p:graphicImage value="http://192.0.0.121:8080/Fitchi/Cargues/Insumo/#{insumoTerceroBean.insumoTerceroSeleccionado.imagen}" class="w-full"
+                                        rendered="#{insumoTerceroBean.insumoTerceroSeleccionado.imagen == null ? false : true}" id="imgEst"/>
+                    </h:panelGroup>
+                </div>
+            </div>
+        </p:panel>
+    </h:form>
+    <h:form >
+        <div class="flex justify-content-center" >
+            <div class="card flex align-items-start justify-content-start w-10" >
+                <div class="card-container ml-1 w-full">
+                    <div class="ml-10">
+                        <p:commandButton value="Imprimir"
+                                         process="@this"                          
+                                         ajax="false" disabled="#{insumoTerceroBean.dsbImpresion}"
+                                         actionListener="#{insumoTerceroBean.imprimirReporte()}"
+                                         update="@form"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex align-items-end justify-content-between mt-3">
+            <p:commandButton class="flex border-round m-2" process="@this" update="@form" icon="pi pi-arrow-left"
+                          value="Proceso de acabados" action="#{insumoTerceroBean.redirect('proceso_acabado')}"/>
+            <p:commandButton class="flex border-round m-2" process="@this" update="@form" icon="pi pi-home" iconPos="right"
+                          value="Inicio" action="principal?faces-redirect=true"/>
+            <p:commandButton class="flex border-round m-2" process="@this" update="@form" icon="pi pi-arrow-right" iconPos="right"
+                          value="Control de medidas" action="#{insumoTerceroBean.redirect('control_medidas')}"/>
+        </div>
+    </h:form>
+</html>

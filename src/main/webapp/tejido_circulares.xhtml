@@ -1,0 +1,405 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>Tejido Circ.</title>  
+        <link rel="shortcut icon" type="image/png" href="images/favicon.png" />
+        <link rel="stylesheet" href="https://unpkg.com/primeflex@^3/primeflex.css"/>
+    </h:head>
+
+    <style type="text/css">
+        .ui-datatable,
+        .ui-datatable .ui-datatable-tablewrapper table {
+            font-size: 12px !important;
+        }
+
+        .ui-datatable .ui-paginator .ui-paginator-current {
+            font-size: 10px !important;
+        }
+    </style>
+
+    <h:form id="form">
+        <p:growl showDetail="true" id="msgs" />
+        <p:panel header="Tejido en circulares" >
+
+            <div class="flex justify-content-center" >
+                <div class="card flex align-items-start justify-content-start w-11" >
+                    <div class="card-container ml-1 w-full">
+                        <div class="flex align-items-start justify-content-start">
+                            <p:outputLabel value="Estilo" class="font-medium text-xl m-2"/>
+                            <p:outputLabel value="#{tejidoCircularesBean.estilo.estilo}" class="text-xl m-2"/>
+                            <p:outputLabel value="Referencia" class="font-medium text-xl m-2"/>
+                            <p:outputLabel value="#{tejidoCircularesBean.estilo.referencias}" class="text-xl m-2" />
+                        </div>
+                        <div class="align-items-center justify-content-start m-2">
+                            <p:outputLabel value="Máquina" class="m-2 w-6"/>
+                            <p:selectOneMenu id="somMaq" value="#{tejidoCircularesBean.tejidoCirculares.idMaquina}" class="w-3"  filter="true"
+                                             converter="entityConverter" filterMatchMode="contains" autoWidth="false" >
+                                <p:ajax event="change" update="olMaq" />
+                                <f:selectItem itemLabel="Seleccione" itemValue="#{null}"/>
+                                <f:selectItems value="#{tejidoCircularesBean.maquinaList}"
+                                               var="maquinaVar"
+                                               itemValue="#{maquinaVar}"
+                                               itemLabel="#{maquinaVar.nombre}"
+                                               />   
+                            </p:selectOneMenu>
+                            <p:outputLabel value="Velocidad máxima:" class="ml-2"/>
+                            <p:outputLabel id="olMaq" class="ml-2" value="#{tejidoCircularesBean.tejidoCirculares.idMaquina.velocidad}"/>
+                        </div>
+                        <div class=" align-items-center justify-content-start m-2">
+                            <p:outputLabel value="Embalaje" class="m-2 w-6"/>
+                            <p:selectOneMenu id="somEmb" value="#{tejidoCircularesBean.tejidoCirculares.idEmbalaje}" class="w-3"  filter="true"
+                                             converter="entityConverter" filterMatchMode="contains" autoWidth="false">
+                                <f:selectItem itemLabel="Seleccione" itemValue="#{null}"/>
+                                <f:selectItems value="#{tejidoCircularesBean.embalajeList}"
+                                               var="embalajeVar"
+                                               itemValue="#{embalajeVar}"
+                                               itemLabel="#{embalajeVar.nombre}"
+                                               />   
+                            </p:selectOneMenu>
+                            <p:outputLabel value="Cantidad:" class="ml-2"/>
+                            <p:inputText value="#{tejidoCircularesBean.tejidoCirculares.cantidad}" class="ml-2" size="10"/>
+                        </div>
+                        <div  class="m-2">
+                            <p:outputLabel value="Observaciones"/>
+                        </div>
+                        <div  class="m-2 w-full flex align-items-stretch flex-wrap">
+                            <p:inputTextarea value="#{tejidoCircularesBean.tejidoCirculares.observaciones}" class="w-10"/>
+                            <p:commandButton value="Guardar" class="ml-5 mb-2 align-self-end" process="@this,@form" disabled="#{tejidoCircularesBean.dsbEdicion}"                         
+                                             actionListener="#{tejidoCircularesBean.guardar()}" update="msgs"/>
+                        </div>
+                        <p:divider />
+                        <div class=" align-items-center justify-content-start m-2 mt-4">
+                            <p:dataTable id="dtHiloTejido" size="small" selectionMode="single" selection="#{tejidoCircularesBean.hiloTejidoCirculares}"
+                                         value="#{tejidoCircularesBean.hiloTejidoCircularesList}"  draggableRows="#{!tejidoCircularesBean.dsbEdicion}"
+                                         rowKey="#{hiloVar.idHiloTejidoCirculares}" var="hiloVar" emptyMessage="Sin hilos registrados..." >                
+                                <p:ajax event="rowReorder" listener="#{tejidoCircularesBean.onRowReorderHiloTejido}" update="dtHiloTejido"/>
+                                <p:ajax event="rowSelect" process="@this, dtHiloTejido" update="btnHilEdi"/>
+                                <p:ajax event="rowUnselect" process="@this, dtHiloTejido" update="btnHilEdi"/>
+                                
+                                <p:column headerText="Hilos/enhebrar" class="w-2">
+                                    <h:outputText  value="#{hiloVar.idHiloParametro.nombre}"/>
+                                </p:column>
+                                <p:column headerText="Alimentador 1" class="w-2">
+                                    <h:outputText  value="#{hiloVar.idAlimentador1.idMaterial.nombre}"/>
+                                </p:column>
+                                <p:column headerText="Ghilo" class="w-1">
+                                    <h:outputText  value="#{hiloVar.guia1}"/>
+                                </p:column>
+                                <p:column headerText="Alimentador 2" class="w-2">
+                                    <h:outputText  value="#{hiloVar.idAlimentador2.idMaterial.nombre}"/>
+                                </p:column>
+                                <p:column headerText="Ghilo" class="w-1">
+                                    <h:outputText  value="#{hiloVar.guia2}"/>
+                                </p:column>
+                                <p:column headerText="Alimentador 3" class="w-2">
+                                    <h:outputText  value="#{hiloVar.idAlimentador3.idMaterial.nombre}"/>
+                                </p:column>
+                                <p:column headerText="Ghilo" class="w-1">
+                                    <h:outputText  value="#{hiloVar.guia3}"/>
+                                </p:column>
+                                <p:column headerText="Alimentador 4" class="w-2">
+                                    <h:outputText  value="#{hiloVar.idAlimentador4.idMaterial.nombre}"/>
+                                </p:column>
+                                <p:column headerText="Ghilo" class="w-1">
+                                    <h:outputText  value="#{hiloVar.guia4}"/>
+                                </p:column>
+                                <p:column style="width:3rem;text-align: center">
+                                    <p:commandButton update="dtHiloTejido" action="#{tejidoCircularesBean.borrarHiloTejidoCirculares()}" 
+                                                     process="@this,dtHiloTejido" icon="pi pi-times" title="Borrar hilo"  disabled="#{tejidoCircularesBean.dsbEdicion}">
+                                        <f:setPropertyActionListener value="#{hiloVar}" target="#{tejidoCircularesBean.hiloTejidoCircularesSeleccionado}"/>
+                                    </p:commandButton>
+                                </p:column>
+                                <f:facet name="footer" >
+                                    <p:commandButton value="Añadir hilo" class="text-sm" process="@this" update="dlgs:dlgHil" 
+                                                     actionListener="#{tejidoCircularesBean.abrirDlgHilos()}" disabled="#{tejidoCircularesBean.dsbEdicion}"/>
+                                    <p:commandButton value="Editar" 
+                                                     disabled="#{tejidoCircularesBean.hiloTejidoCirculares.idHiloTejidoCirculares eq null or tejidoCircularesBean.dsbEdicion}"
+                                                     class="ml-1 text-sm" process="@this,dtHiloTejido" update="dtHiloTejido,dlgs:dlgHilEdi" id="btnHilEdi"
+                                                     actionListener="#{tejidoCircularesBean.abrirDlgHiloEditar()}"/>
+                                </f:facet>
+                            </p:dataTable>
+                        </div>
+                        <p:divider />
+                        <div class=" align-items-center justify-content-start m-2 ">
+                            <div class="card flex align-items-start justify-content-center" >
+                                <p >
+                                    <p:dataTable id="dtHiloTension" size="small"
+                                                 value="#{tejidoCircularesBean.hiloTensionList}" 
+                                                 var="tensionVar" >  
+                                        <f:facet name="header" >
+                                            Tensiones
+                                        </f:facet>
+
+                                        <p:column headerText="Hilo" class="w-8">
+                                            <h:outputText  value="#{tensionVar.idHilo.idMaterial.nombre}"/>
+                                        </p:column>
+                                        <p:column headerText="Gramos" class="w-4">
+                                            <h:outputText  value="#{tensionVar.tension}"/>
+                                        </p:column>
+                                        <p:column style="width:3rem;text-align: center">
+                                            <p:commandButton update="dtHiloTension" action="#{tejidoCircularesBean.borrarHiloTension()}" 
+                                                             process="@this,dtHiloTension" icon="pi pi-times" title="Borrar hilo"  disabled="#{tejidoCircularesBean.dsbEdicion}">
+                                                <f:setPropertyActionListener value="#{tensionVar}" target="#{tejidoCircularesBean.hiloTensionSeleccionado}"/>
+                                            </p:commandButton>
+                                        </p:column>
+                                        <f:facet name="footer" >
+                                            <p:commandButton value="Añadir tensión" class="text-sm" process="@this" update="dlgs:dlgTen" 
+                                                             actionListener="#{tejidoCircularesBean.abrirDlgTension()}" disabled="#{tejidoCircularesBean.dsbEdicion}"/>
+                                        </f:facet>
+                                    </p:dataTable>
+                                </p>
+                                <p:divider layout="vertical" />
+                                <p >
+                                    <p:dataTable id="dtHiloTubulares" size="small" 
+                                                 value="#{tejidoCircularesBean.hiloTubularList}" 
+                                                 var="tubularVar">                
+                                        <f:facet name="header" >
+                                            Tubulares máquina
+                                        </f:facet>
+                                        <p:column headerText="Tubo" class="">
+                                            <h:outputText  value="#{tubularVar.tubo}"/>
+                                        </p:column>
+                                        <p:column headerText="Descripción" class="">
+                                            <h:outputText  value="#{tubularVar.descripcion}"/>
+                                        </p:column>
+                                        <p:column headerText="Cantidad" class="w-2">
+                                            <h:outputText  value="#{tubularVar.cantidad}"/>
+                                        </p:column>
+                                        <p:column style="width:3rem;text-align: center">
+                                            <p:commandButton update="dtHiloTubulares" action="#{tejidoCircularesBean.borrarHiloTubular()}" 
+                                                             process="@this,dtHiloTubulares" icon="pi pi-times" title="Borrar hilo"  disabled="#{tejidoCircularesBean.dsbEdicion}">
+                                                <f:setPropertyActionListener value="#{tubularVar}" target="#{tejidoCircularesBean.hiloTubularSeleccionado}"/>
+                                            </p:commandButton>
+                                        </p:column>
+                                        <f:facet name="footer" >
+                                            <p:commandButton value="Añadir tubular" class="text-sm" process="@this" update="dlgs:dlgTub" 
+                                                             actionListener="#{tejidoCircularesBean.abrirDlgTubular()}" disabled="#{tejidoCircularesBean.dsbEdicion}"/>
+                                        </f:facet>
+                                    </p:dataTable>
+                                </p>
+                            </div>
+                        </div>
+                        <p:divider />
+                        <div class="">
+                            <p:dataTable id="dtPrefijado" size="small" class="m-2"
+                                         value="#{tejidoCircularesBean.prefijadoList}" 
+                                         var="prefijadoVar">                
+                                <f:facet name="header" >
+                                    Prefijado
+                                </f:facet>
+                                <p:column headerText="Ciclo" class="">
+                                    <h:outputText  value="#{prefijadoVar[0]}"/>
+                                </p:column>
+                                <p:column headerText="Descripción" class="w-5">
+                                    <h:outputText  value="#{prefijadoVar[1]}"/>
+                                </p:column>
+                                <p:column headerText="Tiempo" class="">
+                                    <h:outputText  value="#{prefijadoVar[2]}"/>
+                                </p:column>
+                                <p:column headerText="Observaciones" class="">
+                                    <h:outputText  value="#{prefijadoVar[3]}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </div>
+                        <div class="flex justify-content-end flex-wrap">
+                            <p:outputLabel value="Temperatura 95 grados centígrados" class="text-xs font-semibold"/>
+                        </div>
+                        <div class="">
+                            <p:outputLabel value="Observaciones: Como actualmente se prefija." class="text-xs font-semibold"/>
+                        </div>
+                        <div class="m-2 mt-4">
+                            <p:commandButton value="Imprimir"
+                                             process="@this"                          
+                                             ajax="false" disabled="#{tejidoCircularesBean.dsbImpresion}"
+                                             actionListener="#{tejidoCircularesBean.imprimirReporte()}"
+                                             update="@form"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </p:panel>
+        <div class="flex align-items-end justify-content-between">
+            <p:commandButton class="flex border-round m-2" process="@this" update="@form" icon="pi pi-arrow-left"
+                             value="Lista de materiales" action="#{tejidoCircularesBean.redirect('lista_materiales')}"/>
+            <p:commandButton class="flex border-round m-2" process="@this" update="@form" icon="pi pi-home" iconPos="right"
+                             value="Inicio" action="principal?faces-redirect=true"/>
+            <p:commandButton class="flex border-round m-2" process="@this" update="@form" icon="pi pi-arrow-right" iconPos="right"
+                             value="Parámetros de tallaje" action="#{tejidoCircularesBean.redirect('parametro_tallaje')}"/>
+        </div>
+    </h:form>
+    <h:form id="dlgs">
+        <p:dialog  header="Añadir hilo" modal="true" id="dlgHil" widgetVar="dlgHilo">
+
+            <h:panelGrid columns="1">
+                <p:selectOneMenu id="somHilo" value="#{tejidoCircularesBean.hiloTejidoCirculares.idHiloParametro}" converter="entityConverter"
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="Seleccione hilo" />
+                    <f:selectItems value="#{tejidoCircularesBean.hiloParametroList}" var="hiloVar"
+                                   itemValue="#{hiloVar}"
+                                   itemLabel="#{hiloVar.nombre}"/>
+                </p:selectOneMenu>
+                <p:divider />
+                <p:selectOneMenu id="somAli1" value="#{tejidoCircularesBean.hiloTejidoCirculares.idAlimentador1}" converter="entityConverter"
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="Seleccione Alimentador 1" />
+                    <f:selectItems value="#{tejidoCircularesBean.materialEstiloList}" var="materVar"
+                                   itemValue="#{materVar}"
+                                   itemLabel="#{materVar.idMaterial.nombre}"/>
+                </p:selectOneMenu>
+                <h:panelGrid columns="2">
+                    <p:outputLabel value="Guía hilo"/>
+                    <p:inputText id="itG1" value="#{tejidoCircularesBean.hiloTejidoCirculares.guia1}" size="5"/>
+                </h:panelGrid>  
+                <p:divider />
+                <p:selectOneMenu id="somAli2" value="#{tejidoCircularesBean.hiloTejidoCirculares.idAlimentador2}" converter="entityConverter"
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="Seleccione Alimentador 2" />
+                    <f:selectItems value="#{tejidoCircularesBean.materialEstiloList}" var="materVar2"
+                                   itemValue="#{materVar2}"
+                                   itemLabel="#{materVar2.idMaterial.nombre}"/>
+                </p:selectOneMenu>
+                <h:panelGrid columns="2">
+                    <p:outputLabel value="Guía hilo"/>
+                    <p:inputText id="itG2" value="#{tejidoCircularesBean.hiloTejidoCirculares.guia2}" size="5"/>
+                </h:panelGrid>   
+                <p:divider />
+                <p:selectOneMenu id="somAli3" value="#{tejidoCircularesBean.hiloTejidoCirculares.idAlimentador3}" converter="entityConverter"
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="Seleccione Alimentador 3" />
+                    <f:selectItems value="#{tejidoCircularesBean.materialEstiloList}" var="materVar3"
+                                   itemValue="#{materVar3}"
+                                   itemLabel="#{materVar3.idMaterial.nombre}"/>
+                </p:selectOneMenu>
+                <h:panelGrid columns="2">
+                    <p:outputLabel value="Guía hilo"/>
+                    <p:inputText id="itG3" value="#{tejidoCircularesBean.hiloTejidoCirculares.guia3}" size="5"/>
+                </h:panelGrid>   
+                <p:divider />
+                <p:selectOneMenu id="somAli4" value="#{tejidoCircularesBean.hiloTejidoCirculares.idAlimentador4}" converter="entityConverter"
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="Seleccione Alimentador 4" />
+                    <f:selectItems value="#{tejidoCircularesBean.materialEstiloList}" var="materVar4"
+                                   itemValue="#{materVar4}"
+                                   itemLabel="#{materVar4.idMaterial.nombre}"/>
+                </p:selectOneMenu>
+                <h:panelGrid columns="2">
+                    <p:outputLabel value="Guía hilo"/>
+                    <p:inputText id="itG4" value="#{tejidoCircularesBean.hiloTejidoCirculares.guia4}" size="5"/>
+                </h:panelGrid>   
+                <p:commandButton value="Guardar" actionListener="#{tejidoCircularesBean.guardarHiloTejidoCirculares()}"
+                                 class="mt-3" process="@this, somHilo, somAli1,somAli2,somAli3,somAli4, itG1,itG2,itG3,itG4" update="form:dtHiloTejido,dlgHil"/>
+            </h:panelGrid>            
+
+        </p:dialog>
+        
+        <p:dialog  header="Editar hilo" modal="true" id="dlgHilEdi" widgetVar="dlgHiloEditar">
+
+            <h:panelGrid columns="1">
+                <p:selectOneMenu value="#{tejidoCircularesBean.hiloTejidoCirculares.idHiloParametro}" converter="entityConverter"
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="Seleccione hilo" />
+                    <f:selectItems value="#{tejidoCircularesBean.hiloParametroList}" var="hiloVar"
+                                   itemValue="#{hiloVar}"
+                                   itemLabel="#{hiloVar.nombre}"/>
+                </p:selectOneMenu>
+                <p:divider />
+                <p:selectOneMenu  value="#{tejidoCircularesBean.hiloTejidoCirculares.idAlimentador1}" converter="entityConverter"
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="Seleccione Alimentador 1" />
+                    <f:selectItems value="#{tejidoCircularesBean.materialEstiloList}" var="materVar"
+                                   itemValue="#{materVar}"
+                                   itemLabel="#{materVar.idMaterial.nombre}"/>
+                </p:selectOneMenu>
+                <h:panelGrid columns="2">
+                    <p:outputLabel value="Guía hilo"/>
+                    <p:inputText value="#{tejidoCircularesBean.hiloTejidoCirculares.guia1}" size="5"/>
+                </h:panelGrid>  
+                <p:divider />
+                <p:selectOneMenu value="#{tejidoCircularesBean.hiloTejidoCirculares.idAlimentador2}" converter="entityConverter"
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="Seleccione Alimentador 2" />
+                    <f:selectItems value="#{tejidoCircularesBean.materialEstiloList}" var="materVar2"
+                                   itemValue="#{materVar2}"
+                                   itemLabel="#{materVar2.idMaterial.nombre}"/>
+                </p:selectOneMenu>
+                <h:panelGrid columns="2">
+                    <p:outputLabel value="Guía hilo"/>
+                    <p:inputText value="#{tejidoCircularesBean.hiloTejidoCirculares.guia2}" size="5"/>
+                </h:panelGrid>   
+                <p:divider />
+                <p:selectOneMenu value="#{tejidoCircularesBean.hiloTejidoCirculares.idAlimentador3}" converter="entityConverter"
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="Seleccione Alimentador 3" />
+                    <f:selectItems value="#{tejidoCircularesBean.materialEstiloList}" var="materVar3"
+                                   itemValue="#{materVar3}"
+                                   itemLabel="#{materVar3.idMaterial.nombre}"/>
+                </p:selectOneMenu>
+                <h:panelGrid columns="2">
+                    <p:outputLabel value="Guía hilo"/>
+                    <p:inputText value="#{tejidoCircularesBean.hiloTejidoCirculares.guia3}" size="5"/>
+                </h:panelGrid>   
+                <p:divider />
+                <p:selectOneMenu value="#{tejidoCircularesBean.hiloTejidoCirculares.idAlimentador4}" converter="entityConverter"
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="Seleccione Alimentador 4" />
+                    <f:selectItems value="#{tejidoCircularesBean.materialEstiloList}" var="materVar4"
+                                   itemValue="#{materVar4}"
+                                   itemLabel="#{materVar4.idMaterial.nombre}"/>
+                </p:selectOneMenu>
+                <h:panelGrid columns="2">
+                    <p:outputLabel value="Guía hilo"/>
+                    <p:inputText value="#{tejidoCircularesBean.hiloTejidoCirculares.guia4}" size="5"/>
+                </h:panelGrid>   
+                <p:commandButton value="Guardar" actionListener="#{tejidoCircularesBean.editarHiloTejidoCirculares()}"
+                                 class="mt-3" process="@this, dlgHilEdi" update="form:dtHiloTejido,dlgHilEdi"/>
+            </h:panelGrid>            
+
+        </p:dialog>
+
+        <p:dialog  header="Añadir tensión" modal="true" id="dlgTen" widgetVar="dlgTension">
+            <h:panelGrid columns="1">
+                <p:selectOneMenu id="somHiloT" value="#{tejidoCircularesBean.hiloTension.idHilo}" converter="entityConverter"
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="Seleccione hilo" />
+                    <f:selectItems value="#{tejidoCircularesBean.materialEstiloList}" var="tensionVari"
+                                   itemValue="#{tensionVari}"
+                                   itemLabel="#{tensionVari.idMaterial.nombre}"/>
+                </p:selectOneMenu>
+                <p:divider />
+                <h:panelGrid columns="2">
+                    <p:outputLabel value="Gramos"/>
+                    <p:inputText id="itGra" value="#{tejidoCircularesBean.hiloTension.tension}" size="10"/>
+                </h:panelGrid>  
+                <p:divider />
+                <p:commandButton value="Guardar" actionListener="#{tejidoCircularesBean.guardarHiloTension()}"
+                                 class="mt-3" process="@this, somHiloT, itGra" update="form:dtHiloTension,dlgTen"/>
+            </h:panelGrid>            
+        </p:dialog>
+
+        <p:dialog  header="Añadir tubular" modal="true" id="dlgTub" widgetVar="dlgTubular">
+            <h:panelGrid columns="1">
+                <h:panelGrid columns="2">
+                    <p:outputLabel value="Tubo"/>
+                    <p:inputText id="itTub" value="#{tejidoCircularesBean.hiloTubular.tubo}" size="10"/>
+                </h:panelGrid> 
+                <p:divider />
+                <h:panelGrid columns="2">
+                    <p:outputLabel value="Descripción"/>
+                    <p:inputText id="itDesT" value="#{tejidoCircularesBean.hiloTubular.descripcion}" size="20"/>
+                </h:panelGrid>  
+                <p:divider />
+                <h:panelGrid columns="2">
+                    <p:outputLabel value="Cantidad"/>
+                    <p:inputText id="itCantT" value="#{tejidoCircularesBean.hiloTubular.cantidad}" size="10"/>
+                </h:panelGrid>  
+                <p:divider />
+                <p:commandButton value="Guardar" actionListener="#{tejidoCircularesBean.guardarHiloTubular()}"
+                                 class="mt-3" process="@this,itTub,itDesT,itCantT" update="form:dtHiloTubulares,dlgTub"/>
+            </h:panelGrid>            
+        </p:dialog>
+
+    </h:form>
+</html>

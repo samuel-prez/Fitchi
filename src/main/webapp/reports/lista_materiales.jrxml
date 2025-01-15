@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="lista_materiales" printOrder="Horizontal" pageWidth="612" pageHeight="792" columnWidth="582" leftMargin="15" rightMargin="15" topMargin="15" bottomMargin="15" isSummaryWithPageHeaderAndFooter="true" uuid="c63ad8ec-e4db-4b5f-bfd8-9f26a52ef47b">
+	<property name="ireport.zoom" value="1.610510000000005"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ID_ESTILO" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\RITCHI\\Documents\\NetBeansProjects\\fitchi\\src\\main\\webapp\\reports\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select estilo,referencias,e.descripcion,imagen,
+observaciones,referencia_cliente,coleccion,creado,
+actualizado,material_secundario,composicion_secundaria,u.nombre usuario,
+c.nombre categoria, m.nombre marca, s.nombre segmento, mo.nombre mercado_objetivo,
+lp.nombre linea_producto, te.nombre talla_etiqueta, pa.descripcion partida_text,
+pa.codigo partida_cod, co.nombre composicion, peso
+
+from estilo e
+LEFT JOIN usuario u ON e.id_creado = u.id_usuario 
+LEFT JOIN categoria c ON e.id_categoria = c.id_categoria
+LEFT JOIN marca m ON e.id_marca = m.id_marca
+LEFT JOIN segmento s ON e.id_segmento = s.id_segmento
+LEFT JOIN mercado_objetivo mo ON e.id_mercado_objetivo = mo.id_mercado_objetivo
+LEFT JOIN linea_producto lp ON e.id_linea_producto = lp.id_linea_producto
+LEFT JOIN talla_etiqueta te ON e.id_talla_etiqueta = te.id_talla_etiqueta
+LEFT JOIN partida_arancelaria pa ON e.id_partida_arancelaria = pa.id_partida_arancelaria
+LEFT JOIN composicion co on e.id_composicion = co.id_composicion
+
+ where e.id_estilo = $P{ID_ESTILO}]]>
+	</queryString>
+	<field name="estilo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="referencias" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="descripcion" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="imagen" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="observaciones" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="referencia_cliente" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="coleccion" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="creado" class="java.time.LocalDateTime">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="actualizado" class="java.time.LocalDateTime">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="material_secundario" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="composicion_secundaria" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="usuario" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="categoria" class="java.lang.String"/>
+	<field name="marca" class="java.lang.String"/>
+	<field name="segmento" class="java.lang.String"/>
+	<field name="mercado_objetivo" class="java.lang.String"/>
+	<field name="linea_producto" class="java.lang.String"/>
+	<field name="talla_etiqueta" class="java.lang.String"/>
+	<field name="partida_text" class="java.lang.String"/>
+	<field name="partida_cod" class="java.lang.String"/>
+	<field name="composicion" class="java.lang.String"/>
+	<field name="peso" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<variable name="fecha_actual" class="java.lang.String">
+		<variableExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date())]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="60" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="462" height="60" forecolor="#FFFFFF" backcolor="#9DBCDC" uuid="f95258a7-bfa1-4fd7-9806-47fedc45eb99"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FICHA TÉCNICA
+LISTA DE MATERIALES]]></text>
+			</staticText>
+			<image>
+				<reportElement x="462" y="0" width="120" height="60" uuid="c45d6da1-a2f5-4701-bd17-4660e6f0c161"/>
+				<imageExpression><![CDATA["C:\\Users\\RITCHI\\Pictures\\ritchi.jpg"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<detail>
+		<band height="31" splitType="Stretch">
+			<staticText>
+				<reportElement x="9" y="10" width="48" height="15" uuid="1b283f7f-110b-4b6b-a11a-ed6a77bc753b"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESTILO]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="57" y="10" width="76" height="15" uuid="162c45f3-218d-4833-8134-29e0a93e3c73"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{estilo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="133" y="10" width="71" height="15" uuid="e7984e55-8b40-47b5-ba35-f328a7984c94"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REFERENCIA]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="204" y="10" width="179" height="15" uuid="eb99fd5e-4ae2-49bf-a41c-fd16b2629573"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{referencias}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="20">
+			<textField>
+				<reportElement mode="Opaque" x="0" y="0" width="581" height="20" backcolor="#C1C1C1" uuid="057f4d18-f49c-4e16-8516-82be22b6e589"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Impreso " + $V{fecha_actual} +  "          		 Creación " + $F{usuario} + " - " + $F{creado}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="143" splitType="Stretch">
+			<subreport isUsingCache="true">
+				<reportElement isPrintRepeatedValues="false" x="-1" y="0" width="582" height="135" uuid="2b0b7e22-e870-43bd-b705-e51eb9bb9c76"/>
+				<subreportParameter name="ID_ESTILO">
+					<subreportParameterExpression><![CDATA[$P{ID_ESTILO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "lista_materiales_summary.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</summary>
+</jasperReport>

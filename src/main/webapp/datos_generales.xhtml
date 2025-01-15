@@ -1,0 +1,423 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>Datos G.</title>  
+        <link rel="shortcut icon" type="image/png" href="images/favicon.png" />
+        <link rel="stylesheet" href="https://unpkg.com/primeflex@^3/primeflex.css"/>
+    </h:head>
+
+    <style type="text/css">
+
+        .tro .ui-fileupload-buttonbar .ui-button-text-icon-left .ui-button-text {
+            background-color: #60B44C;
+        }
+        .pre .ui-fileupload-buttonbar .ui-button-text-icon-left .ui-button-text {
+            background-color: #AD59BD;
+        }
+
+    </style>
+
+    <h:form id="form" class="card-container flex flex-column">
+        <p:growl showDetail="true" id="msgs" />
+        <p:panel header="Datos generales" >
+            <div class="flex justify-content-center" >
+                <div class="card flex align-items-start justify-content-center w-9" >
+                    <div class="card-container w-6 ml-4">
+
+                        <div class="flex align-items-start justify-content-start">
+                            <p:outputLabel value="Estilo" class="font-medium text-xl m-2"/>
+                            <p:outputLabel value="#{datosGeneralesBean.estilo.estilo}" class="font-medium text-xl m-2"/>
+                        </div>
+                        <div class="flex align-items-center justify-content-start">
+                            <p:outputLabel value="Referencia" class="m-2 w-8rem"/>
+                            <p:inputText id="inRef" value="#{datosGeneralesBean.estilo.referencias}" class="m-2 w-7" />
+                        </div>
+                        <div class="flex align-items-start justify-content-start ">
+                            <p:outputLabel value="Descripción" class="m-2  mt-3 w-8rem"/>
+                            <p:inputTextarea id="inDesc" value="#{datosGeneralesBean.estilo.descripcion}" class="m-2 w-7"/>
+                        </div>
+                        <div class="flex align-items-center justify-content-start">
+                            <p:outputLabel value="Segmento" class="m-2 w-8rem"/>
+                            <p:selectOneMenu id="somSeg" value="#{datosGeneralesBean.estilo.idSegmento}" class="m-2 w-7" 
+                                             converter="entityConverter">
+                                <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                <f:selectItems value="#{datosGeneralesBean.segmentoList}"
+                                               var="segmentoVar"
+                                               itemValue="#{segmentoVar}"
+                                               itemLabel="#{segmentoVar.nombre}"
+                                               />   
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="flex align-items-center justify-content-start">
+                            <p:outputLabel value="Línea producto" class="m-2 w-8rem"/>
+                            <p:selectOneMenu id="somLin" value="#{datosGeneralesBean.estilo.idLineaProducto}" class="m-2 w-7" 
+                                             converter="entityConverter" filter="true" filterMatchMode="contains">
+                                <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                <f:selectItems value="#{datosGeneralesBean.lineaProductoList}"
+                                               var="lineaProVar"
+                                               itemValue="#{lineaProVar}"
+                                               itemLabel="#{lineaProVar.nombre}"
+                                               />   
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="flex align-items-center justify-content-start">
+                            <p:outputLabel value="Categoría" class="m-2 w-8rem"/>
+                            <p:selectOneMenu id="somCat" value="#{datosGeneralesBean.estilo.idCategoria}" class="m-2 w-7" 
+                                             converter="entityConverter" filter="true" filterMatchMode="contains">
+                                <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                <f:selectItems value="#{datosGeneralesBean.categoriaList}"
+                                               var="categoriaVar"
+                                               itemValue="#{categoriaVar}"
+                                               itemLabel="#{categoriaVar.nombre}"
+                                               />   
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="flex align-items-start justify-content-start">
+                            <p:outputLabel value="Composición principal" class="m-2 w-8rem"/>
+                            <p:selectOneMenu id="somCompo" value="#{datosGeneralesBean.estilo.idComposicion}" class="m-2 w-7"  autoWidth="false"
+                                             converter="entityConverter" filter="true" filterMatchMode="contains">
+                                <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                <f:selectItems value="#{datosGeneralesBean.composicionList}"
+                                               var="compoVar"
+                                               itemValue="#{compoVar}"
+                                               itemLabel="#{compoVar.nombre}"
+                                               />   
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="flex align-items-center justify-content-start">
+                            <p:outputLabel value="Material secundario" class="m-2 w-8rem"/>
+                            <p:inputText id="inMatSec" value="#{datosGeneralesBean.estilo.materialSecundario}" class="m-2 w-7" />
+                        </div>
+
+                        <div class="flex align-items-center justify-content-start">
+                            <p:outputLabel value="Composición secun." class="m-2 w-8rem"/>
+                            <p:inputText id="inCompSec" value="#{datosGeneralesBean.estilo.composicionSecundaria}" class="m-2 w-7" />
+                        </div>
+
+                        <div class="flex align-items-center justify-content-start">
+                            <p:outputLabel value="Marca" class="m-2 w-8rem"/>
+                            <p:selectOneMenu id="somMar" value="#{datosGeneralesBean.estilo.idMarca}" class="m-2 w-7" 
+                                             converter="entityConverter" filter="true" filterMatchMode="contains">
+                                <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                <f:selectItems value="#{datosGeneralesBean.marcaList}"
+                                               var="marcaVar"
+                                               itemValue="#{marcaVar}"
+                                               itemLabel="#{marcaVar.nombre}"
+                                               />   
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="flex align-items-center justify-content-start">
+                            <p:outputLabel value="Referencia cliente" class="m-2 w-8rem"/>
+                            <p:inputText id="inRefCli" value="#{datosGeneralesBean.estilo.referenciaCliente}" class="m-2 w-7" />
+                        </div>
+
+                        <div class="flex align-items-center justify-content-start">
+                            <p:outputLabel value="Mercado objetivo" class="m-2 w-8rem"/>
+                            <p:selectOneMenu id="somMer" value="#{datosGeneralesBean.estilo.idMercadoObjetivo}" class="m-2 w-7" 
+                                             converter="entityConverter" autoWidth="false">
+                                <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                <f:selectItems value="#{datosGeneralesBean.mercadoObjetivoList}"
+                                               var="mercadoVar"
+                                               itemValue="#{mercadoVar}"
+                                               itemLabel="#{mercadoVar.nombre}"
+                                               />   
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="flex align-items-center justify-content-start">
+                            <p:outputLabel value="Colección" class="m-2 w-8rem"/>
+                            <p:inputText id="inCol" value="#{datosGeneralesBean.estilo.coleccion}" class="m-2 w-7" />
+                        </div>
+
+                        <div class="flex align-items-center justify-content-start">
+                            <p:outputLabel value="Tallas en etiquetas" class="m-2 w-8rem"/>
+                            <p:selectOneMenu id="somTallEti" value="#{datosGeneralesBean.estilo.idTallaEtiqueta}" class="m-2 w-7" 
+                                             converter="entityConverter" autoWidth="false">
+                                <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                <f:selectItems value="#{datosGeneralesBean.tallaEtiquetaList}"
+                                               var="tallaEtiquetaVar"
+                                               itemValue="#{tallaEtiquetaVar}"
+                                               itemLabel="#{tallaEtiquetaVar.nombre}"
+                                               />   
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="flex align-items-start justify-content-start ">
+                            <p:outputLabel value="Observaciones generales" class="m-2  mt-3 w-8rem"/>
+                            <p:inputTextarea id="inObs" value="#{datosGeneralesBean.estilo.observaciones}" class="m-2 w-7"/>
+                        </div>
+
+                        <div class="flex align-items-center justify-content-start">
+                            <p:outputLabel value="Partida aranceralaria" class="m-2 w-8rem"/>
+                            <p:selectOneMenu id="somPart" value="#{datosGeneralesBean.estilo.idPartidaArancelaria}" class="m-2 w-7" 
+                                             converter="entityConverter" filter="true" filterMatchMode="contains" autoWidth="false">
+                                <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                <f:selectItems value="#{datosGeneralesBean.partidaArancelariaList}"
+                                               var="partidaVar"
+                                               itemValue="#{partidaVar}"
+                                               itemLabel="#{partidaVar.codigo} #{partidaVar.descripcion}"
+                                               />   
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="flex align-items-start justify-content-start ">
+                            <p:outputLabel value="Peso" class="m-2  mt-3 w-8rem"/>
+                            <p:inputText id="inPes" value="#{datosGeneralesBean.estilo.peso}" class="m-2 w-7"/>
+                        </div>
+                        <div class="flex align-items-center justify-content-start">
+                            <p:outputLabel value="Guía de tallas" class="m-2 w-8rem"/>
+                            <p:selectOneMenu id="somGTall" value="#{datosGeneralesBean.estilo.idGuiaTallas}" class="m-2 w-7" 
+                                             converter="entityConverter" autoWidth="false">
+                                <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                <f:selectItems value="#{datosGeneralesBean.guiaTallasList}"
+                                               var="guiaVar"
+                                               itemValue="#{guiaVar}"
+                                               itemLabel="#{guiaVar.nombre}"
+                                               />   
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="flex align-items-start justify-content-start ">
+                            <p:outputLabel value="Clima" class="m-2  mt-3 w-8rem"/>
+                            <p:inputTextarea id="inCli" value="#{datosGeneralesBean.estilo.clima}" class="m-2 w-7 text-xs"/>
+                        </div>
+                        <div class="flex align-items-start justify-content-start ">
+                            <p:outputLabel value="Instrucciones de postura" class="m-2  mt-3 w-8rem"/>
+                            <p:inputTextarea id="inPos" value="#{datosGeneralesBean.estilo.postura}" class="m-2 w-7 text-xs"/>
+                        </div>
+                        <div class="flex align-items-start justify-content-start ">
+                            <p:outputLabel value="Instrucciones de cuidado" class="m-2  mt-3 w-8rem"/>
+                            <p:inputTextarea id="inLav" value="#{datosGeneralesBean.estilo.lavado}" class="m-2 w-7 text-xs"/>
+                        </div>
+                        <div class="flex align-items-start justify-content-end m-2 mr-6">
+                            <p:commandButton value="Guardar"
+                                             process="@this,@form"                          
+                                             actionListener="#{datosGeneralesBean.guardarReporte()}"
+                                             disabled="#{datosGeneralesBean.dsbEdicion}"
+                                             update="msgs"/>
+                        </div>
+
+                    </div>
+                    <div class="card-container w-6" >
+                        <p:dataTable id="dtColor" value="#{datosGeneralesBean.colorEstiloList}"
+                                     var="colorVari" 
+                                     emptyMessage="Sin colores" >
+                            <p:column headerText="Colores" class="text">
+                                <h:outputText  value="#{colorVari.idColor.nombre}"/>
+                            </p:column>
+                            <p:column style="width:3rem;text-align: center">
+                                <p:commandButton update="dtColor" action="#{datosGeneralesBean.borrarColor()}" 
+                                                 process="@this,dtColor" icon="pi pi-times" title="Borrar color"  disabled="#{datosGeneralesBean.dsbEdicion}">
+                                    <f:setPropertyActionListener value="#{colorVari}"
+                                                                 target="#{datosGeneralesBean.colorSeleccionado}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <f:facet name="footer" >
+                                <p:commandButton value="Añadir" process="@this" update="dlgs:dlgCol" actionListener="#{datosGeneralesBean.abrirDlgColor()}"
+                                                 disabled="#{datosGeneralesBean.dsbEdicion}"/>
+                            </f:facet>
+
+                        </p:dataTable>
+
+                        <p:dataTable id="dtTalla" value="#{datosGeneralesBean.tallaEstiloList}"
+                                     var="tallaVari"  class="mt-3" selectionMode="single" selection="#{datosGeneralesBean.tallaEstilo}"
+                                     emptyMessage="Sin tallas" rowKey="#{tallaVari.idTallaEstilo}">
+                            
+                            <p:ajax event="rowSelect" process="@this, dtTalla" update="btnTallaEdi"/>
+                            <p:ajax event="rowUnselect" process="@this, dtTalla" update="btnTallaEdi"/>
+
+                            <p:column headerText="Talla" class="w-2">
+                                <h:outputText  value="#{tallaVari.idTalla.nombre}"/>
+                            </p:column>
+                            <p:column headerText="Identificación de talla">
+                                <h:outputText  value="#{tallaVari.identificacionTallaTejido}"/>
+                            </p:column>
+                            <p:column style="width:3rem;text-align: center">
+                                <p:commandButton update="dtTalla" action="#{datosGeneralesBean.borrarTalla()}" 
+                                                 process="@this,dtTalla" icon="pi pi-times" title="Borrar talla"  disabled="#{datosGeneralesBean.dsbEdicion}">
+                                    <f:setPropertyActionListener value="#{tallaVari}"
+                                                                 target="#{datosGeneralesBean.tallaSeleccionada}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <f:facet name="footer" >
+                                <p:commandButton value="Añadir" process="@this" update="dlgs:dlgTall" actionListener="#{datosGeneralesBean.abrirDlgTalla()}"
+                                                 disabled="#{datosGeneralesBean.dsbEdicion}"/>
+                                <p:commandButton value="Editar" process="@this" update="dlgs:dlgTallEdi" actionListener="#{datosGeneralesBean.abrirDlgTallaEditar()}"
+                                                 disabled="#{datosGeneralesBean.tallaEstilo.idTallaEstilo eq null or datosGeneralesBean.dsbEdicion}"
+                                                 class="ml-2" id="btnTallaEdi"/>
+                            </f:facet>
+
+                        </p:dataTable>
+                        <div class="mt-3">
+                            <p:fileUpload mode="advanced"
+                                          multiple="false"  label="Subir foto" auto="true"
+                                          sizeLimit="10240000" allowTypes="/(\.|\/)(jpg|jpeg|png)$/"
+                                          invalidSizeMessage="Archivo muy pesado" process="@this"
+                                          invalidFileMessage="Formatos aceptados: jpg, jpeg, png."
+                                          update="panImg" disabled="#{datosGeneralesBean.dsbEdicion}"
+                                          listener="#{datosGeneralesBean.handleFileUpload}"/>
+                        </div>
+                        <div class="card mt-2" id="divImg">
+                            <h:panelGroup id="panImg">
+                                <p:graphicImage value="http://192.0.0.121:8080/Fitchi/Cargues/Estilos/#{datosGeneralesBean.estilo.imagen}" class="w-full" 
+                                                rendered="#{datosGeneralesBean.estilo.imagen == null ? false : true}" id="imgEst"/>
+                            </h:panelGroup>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <div class="flex justify-content-center" >
+                <div class="card flex flex-column align-items-start justify-content-center w-9">
+                    <p:dataTable id="dtParametro" value="#{datosGeneralesBean.parametroPrendaEstiloList}"
+                                 var="parametroVar" draggableRows="#{!datosGeneralesBean.dsbEdicion}"
+                                 emptyMessage="Sin parámetros"  selectionMode="single" 
+                                 rowKey="#{parametroVar.idParametroPrendaEstilo}"
+                                 selection="#{datosGeneralesBean.parametroPrendaEstilo}">
+                        <p:ajax event="rowReorder" listener="#{datosGeneralesBean.onRowReorder}" update=":form:msgs,dtParametro"/>
+                        <p:ajax event="rowSelect" process="@this, dtParametro" update="btnParEdi"/>
+                        <p:ajax event="rowUnselect" process="@this, dtParametro" update="btnParEdi"/>
+                        <p:column headerText="Orden" class="w-1">
+                            <h:outputText  value="#{parametroVar.orden + 1}"/>
+                        </p:column>
+                        <p:column headerText="Parte del producto" class="w-3">
+                            <h:outputText  value="#{parametroVar.idParametroPrenda.nombre}"/>
+                        </p:column>
+                        <p:column headerText="Descripción">
+                            <h:outputText  value="#{parametroVar.descripcion}"/>
+                        </p:column>
+                        <p:column style="width:3rem;text-align: center">
+                            <p:commandButton update="dtParametro" action="#{datosGeneralesBean.borrarParametro()}" 
+                                             process="@this,dtParametro" icon="pi pi-times" title="Borrar parámetro"  disabled="#{datosGeneralesBean.dsbEdicion}">
+                                <f:setPropertyActionListener value="#{parametroVar}" target="#{datosGeneralesBean.parametroSeleccionado}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <f:facet name="footer" >
+
+                            <div class="flex justify-content-end">
+                                <p:commandButton value="Editar" disabled="#{datosGeneralesBean.parametroPrendaEstilo.idParametroPrendaEstilo eq null or datosGeneralesBean.dsbEdicion}"
+                                                 class="mr-1" process="@this,dtParametro" update="dtParametro,dlgs:dlgParEdi" id="btnParEdi"
+                                                 actionListener="#{datosGeneralesBean.abrirDlgEditarParametro()}"/>
+                                <p:commandButton value="Añadir parámetro"  process="@this" update="dlgs:dlgPar" actionListener="#{datosGeneralesBean.abrirDlgParametro()}"
+                                                 disabled="#{datosGeneralesBean.dsbEdicion}"/>
+                            </div>
+                        </f:facet>
+                    </p:dataTable>
+                    <div class="flex">
+                        <div class="m-2">
+                            <p:commandButton value="Imprimir"
+                                             process="@this"                          
+                                             ajax="false" disabled="#{datosGeneralesBean.dsbImpresion}"
+                                             actionListener="#{datosGeneralesBean.imprimirReporte()}"
+                                             update="@form"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </p:panel>
+        <div class="flex align-items-end justify-content-between">
+            <p:commandButton class="flex border-round m-2" process="@this" update="@form" icon="pi pi-home" iconPos="right"
+                             value="Inicio" action="principal?faces-redirect=true"/>
+            <p:commandButton class="flex border-round m-2" process="@this" update="@form" icon="pi pi-arrow-right" iconPos="right"
+                             value="Lista de materiales" action="#{datosGeneralesBean.redirect()}"/>
+        </div>
+
+
+
+    </h:form>
+    <h:form id="dlgs" >
+
+        <p:dialog  header="Añadir color" modal="true" id="dlgCol" widgetVar="dlgColor">
+
+            <h:panelGrid columns="1">
+                <p:selectOneMenu id="somColor" value="#{datosGeneralesBean.colorEstilo.idColor}" converter="entityConverter"
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="Seleccione color" />
+                    <f:selectItems value="#{datosGeneralesBean.colorList}" var="colorVar"
+                                   itemValue="#{colorVar}"
+                                   itemLabel="#{colorVar.nombre}"/>
+
+                </p:selectOneMenu>
+                <p:commandButton value="Guardar" actionListener="#{datosGeneralesBean.guardarColor()}"
+                                 class="mt-3" process="@this, somColor" update="form:dtColor,dlgCol"/>
+            </h:panelGrid>            
+
+        </p:dialog>
+
+        <p:dialog  header="Añadir talla" modal="true" id="dlgTall" widgetVar="dlgTalla" width="400" >
+
+            <h:panelGrid columns="1" style="width: 100%">
+                <p:selectOneMenu id="somTall" value="#{datosGeneralesBean.tallaEstilo.idTalla}" converter="entityConverter" class="mb-3">
+                    <f:selectItem itemLabel="Seleccione talla" />
+                    <f:selectItems value="#{datosGeneralesBean.tallaList}" var="tallaVar"
+                                   itemValue="#{tallaVar}"
+                                   itemLabel="#{tallaVar.nombre}"/>
+                </p:selectOneMenu>
+                <p:outputLabel value="Identificación de talla en tejido" />
+                <p:inputTextarea id="inIdenTall" value="#{datosGeneralesBean.tallaEstilo.identificacionTallaTejido}" class="mt-1 w-full"/>
+                <p:commandButton value="Guardar" actionListener="#{datosGeneralesBean.guardarTalla()}"
+                                 class="mt-3" process="@this, somTall, inIdenTall" update="form:dtTalla,dlgTall"/>
+            </h:panelGrid>            
+        </p:dialog>
+
+        <p:dialog  header="Editar talla" modal="true" id="dlgTallEdi" widgetVar="dlgTallaEditar" width="400" >
+
+            <h:panelGrid columns="1" style="width: 100%">
+                <p:selectOneMenu id="somTall2" value="#{datosGeneralesBean.tallaEstilo.idTalla}" converter="entityConverter" class="mb-3">
+                    <f:selectItem itemLabel="Seleccione talla" />
+                    <f:selectItems value="#{datosGeneralesBean.tallaList}" var="tallaVar"
+                                   itemValue="#{tallaVar}"
+                                   itemLabel="#{tallaVar.nombre}"/>
+                </p:selectOneMenu>
+                <p:outputLabel value="Identificación de talla en tejido" />
+                <p:inputTextarea id="inIdenTall2" value="#{datosGeneralesBean.tallaEstilo.identificacionTallaTejido}" class="mt-1 w-full"/>
+                <p:commandButton value="Guardar" actionListener="#{datosGeneralesBean.editarTalla()}"
+                                 class="mt-3" process="@this, somTall2, inIdenTall2" update="form:dtTalla,dlgTallEdi,form:msgs"/>
+            </h:panelGrid>            
+        </p:dialog>
+
+        <p:dialog  header="Añadir parámetro" modal="true" id="dlgPar" widgetVar="dlgParametro" width="400" >
+
+            <h:panelGrid columns="1" style="width: 100%">
+                <p:selectOneMenu id="somPar" value="#{datosGeneralesBean.parametroPrendaEstilo.idParametroPrenda}"
+                                 filter="true" converter="entityConverter" filterMatchMode="contains" class="mb-3">
+                    <f:selectItem itemLabel="Seleccione parámetro" />
+                    <f:selectItems value="#{datosGeneralesBean.parametroPrendaList}" var="paraVar"
+                                   itemValue="#{paraVar}"
+                                   itemLabel="#{paraVar.nombre}"/>
+                </p:selectOneMenu>
+                <p:outputLabel value="Descripción" />
+                <p:inputTextarea id="inDesPar" value="#{datosGeneralesBean.parametroPrendaEstilo.descripcion}" class="mt-1 w-full"/>
+                <p:commandButton value="Guardar" actionListener="#{datosGeneralesBean.guardarParametro()}"
+                                 class="mt-3" process="@this, somPar, inDesPar" update="form:dtParametro,dlgPar"/>
+            </h:panelGrid>            
+
+        </p:dialog>
+
+        <p:dialog  header="Editar parámetro" modal="true" id="dlgParEdi" widgetVar="dlgEditarParametro" width="400" >
+
+            <h:panelGrid columns="1" style="width: 100%">
+                <p:selectOneMenu id="somParEdi" value="#{datosGeneralesBean.parametroPrendaEstilo.idParametroPrenda}"
+                                 filter="true" converter="entityConverter" filterMatchMode="contains" class="mb-3">
+                    <f:selectItem itemLabel="Seleccione parámetro" />
+                    <f:selectItems value="#{datosGeneralesBean.parametroPrendaList}" var="paraVar"
+                                   itemValue="#{paraVar}"
+                                   itemLabel="#{paraVar.nombre}"/>
+                </p:selectOneMenu>
+                <p:outputLabel value="Descripción" />
+                <p:inputTextarea id="inDesParEdi" value="#{datosGeneralesBean.parametroPrendaEstilo.descripcion}" class="mt-1 w-full"/>
+                <p:commandButton value="Guardar" actionListener="#{datosGeneralesBean.editarParametro()}"
+                                 class="mt-3" process="@this, somParEdi, inDesParEdi" update="form:dtParametro,dlgParEdi"/>
+            </h:panelGrid>            
+
+        </p:dialog>
+
+    </h:form>
+</html>

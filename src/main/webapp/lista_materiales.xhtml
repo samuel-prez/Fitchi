@@ -1,0 +1,211 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>Lista Mat.</title>  
+        <link rel="shortcut icon" type="image/png" href="images/favicon.png" />
+        <link rel="stylesheet" href="https://unpkg.com/primeflex@^3/primeflex.css"/>
+    </h:head>
+
+    <style type="text/css">
+    </style>
+
+    <h:form id="form">
+        <p:growl showDetail="true" id="msgs" />
+        <p:panel header="Lista de materiales" >
+
+            <div class="card">
+                <div class="flex align-items-start justify-content-start m-1">
+                    <p:outputLabel value="Estilo" class="font-medium text-xl ml-1 mr-1"/>
+                    <p:outputLabel value="#{listaMaterialesBean.estilo.estilo}" class="font-medium text-xl "/>
+                </div>
+                <div class="card-container flex justify-content-center align-items-center flex-column">
+                    <p:accordionPanel multiple="true" widgetVar="multiple"  class="w-10" activeIndex="0,1,2,3">
+                        <p:tab title="1. Tejido">
+                            <div class="mb-2 flex align-items-center">
+                                <p:selectOneMenu id="somTej" value="#{listaMaterialesBean.materialEstiloTejido.idMaterial}" class="w-7"  filter="true"
+                                                 converter="entityConverter" filterMatchMode="contains" autoWidth="false">
+                                    <f:selectItem itemLabel="Seleccione material" itemValue="#{null}"/>
+                                    <f:selectItems value="#{listaMaterialesBean.materialListTejido}"
+                                                   var="materialVar"
+                                                   itemValue="#{materialVar}"
+                                                   itemLabel="#{materialVar.codigo} #{materialVar.nombre} #{materialVar.idProveedor.nombre}"
+                                                   />   
+                                </p:selectOneMenu>
+                                <p:inputText class="m-2 w-3" value="#{listaMaterialesBean.materialEstiloTejido.observaciones}" placeholder="Observaciones" id="inObs"/>
+                                <p:commandButton value="Añadir" process="@this, somTej, inObs" update="dtMaterialEstiloTejido, somTej, inObs"
+                                                 actionListener="#{listaMaterialesBean.añadirMaterialTejido()}" disabled="#{listaMaterialesBean.dsbEdicion}"/>
+                            </div>
+                            <p:dataTable  id="dtMaterialEstiloTejido" var="materialT" value="#{listaMaterialesBean.materialEstiloTejidoList}" 
+                                          emptyMessage="Sin materiales" size="small" draggableRows="#{!listaMaterialesBean.dsbEdicion}">
+
+                                <p:ajax event="rowReorder" listener="#{listaMaterialesBean.onRowReorderTejido}" update=":form:msgs,dtMaterialEstiloTejido"/>
+                                <p:column headerText="Código" class="w-2">
+                                    <h:outputText  value="#{materialT.idMaterial.codigo}"/>
+                                </p:column>
+                                <p:column headerText="Nombre" class="w-4">
+                                    <h:outputText  value="#{materialT.idMaterial.nombre}"/>
+                                </p:column>
+                                <p:column headerText="Proveedor" class="w-2">
+                                    <h:outputText  value="#{materialT.idMaterial.idProveedor.nombre}"/>
+                                </p:column>
+                                <p:column headerText="Observaciones" class="w-4">
+                                    <h:outputText  value="#{materialT.observaciones}"/>
+                                </p:column>
+                                <p:column style="width:3rem;text-align: center">
+                                    <p:commandButton update="dtMaterialEstiloTejido" action="#{listaMaterialesBean.borrarMaterialEstilo('TEJIDO')}" 
+                                      process="@this,dtMaterialEstiloTejido" icon="pi pi-times" title="Borrar material"  disabled="#{listaMaterialesBean.dsbEdicion}">
+                                        <f:setPropertyActionListener value="#{materialT}"
+                                                                     target="#{listaMaterialesBean.materialEstiloSeleccionado}"/>
+                                    </p:commandButton>
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:tab>
+                        <p:tab title="2. Confección">
+                            <div class="mb-2 flex align-items-center">
+                                <p:selectOneMenu id="somConf" value="#{listaMaterialesBean.materialEstiloConfeccion.idMaterial}" class="w-7"  filter="true"
+                                                 converter="entityConverter" filterMatchMode="contains" autoWidth="false">
+                                    <f:selectItem itemLabel="Seleccione material" itemValue="#{null}"/>
+                                    <f:selectItems value="#{listaMaterialesBean.materialListConfeccion}"
+                                                   var="materialVar2"
+                                                   itemValue="#{materialVar2}"
+                                                   itemLabel="#{materialVar2.codigo} #{materialVar2.nombre} #{materialVar2.idProveedor.nombre}"
+                                                   />   
+                                </p:selectOneMenu>
+                                <p:inputText class="m-2 w-3" value="#{listaMaterialesBean.materialEstiloConfeccion.observaciones}" placeholder="Observaciones" id="inObsConf"/>
+                                <p:commandButton value="Añadir" process="@this, somConf, inObsConf" update="dtMaterialEstiloConfeccion, somConf, inObsConf"
+                                                 actionListener="#{listaMaterialesBean.añadirMaterialConfeccion()}" disabled="#{listaMaterialesBean.dsbEdicion}"/>
+                            </div>
+                            <p:dataTable  id="dtMaterialEstiloConfeccion" var="materialC" value="#{listaMaterialesBean.materialEstiloConfeccionList}"
+                                          emptyMessage="Sin materiales" size="small" draggableRows="#{!listaMaterialesBean.dsbEdicion}">>
+
+                                <p:ajax event="rowReorder" listener="#{listaMaterialesBean.onRowReorderConfeccion}" update=":form:msgs,dtMaterialEstiloConfeccion"/>
+                                <p:column headerText="Código" class="w-2">
+                                    <h:outputText  value="#{materialC.idMaterial.codigo}"/>
+                                </p:column>
+                                <p:column headerText="Nombre" class="w-4">
+                                    <h:outputText  value="#{materialC.idMaterial.nombre}"/>
+                                </p:column>
+                                <p:column headerText="Proveedor" class="w-2">
+                                    <h:outputText  value="#{materialC.idMaterial.idProveedor.nombre}"/>
+                                </p:column>
+                                <p:column headerText="Observaciones" class="w-4">
+                                    <h:outputText  value="#{materialC.observaciones}"/>
+                                </p:column>
+                                <p:column style="width:3rem;text-align: center">
+                                    <p:commandButton update="dtMaterialEstiloConfeccion" action="#{listaMaterialesBean.borrarMaterialEstilo('CONFECCION')}" 
+                                        process="@this,dtMaterialEstiloConfeccion" icon="pi pi-times" title="Borrar material"  disabled="#{listaMaterialesBean.dsbEdicion}">
+                                        <f:setPropertyActionListener value="#{materialC}"
+                                                                     target="#{listaMaterialesBean.materialEstiloSeleccionado}"/>
+                                    </p:commandButton>
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:tab>
+                        <p:tab title="3. Tintorería">
+                            <div class="mb-2 flex align-items-center">
+                                <p:selectOneMenu id="somTint" value="#{listaMaterialesBean.materialEstiloTintoreria.idMaterial}" class="w-7"  filter="true"
+                                                 converter="entityConverter" filterMatchMode="contains" autoWidth="false">
+                                    <f:selectItem itemLabel="Seleccione material" itemValue="#{null}"/>
+                                    <f:selectItems value="#{listaMaterialesBean.materialListTintoreria}"
+                                                   var="materialVar3"
+                                                   itemValue="#{materialVar3}"
+                                                   itemLabel="#{materialVar3.codigo} #{materialVar3.nombre} #{materialVar3.idProveedor.nombre}"
+                                                   />   
+                                </p:selectOneMenu>
+                                <p:inputText class="m-2 w-3" value="#{listaMaterialesBean.materialEstiloTintoreria.observaciones}" placeholder="Observaciones" id="inObsTint"/>
+                                <p:commandButton value="Añadir" process="@this, somTint, inObsTint" update="dtMaterialEstiloTintoreria, somTint, inObsTint"
+                                   actionListener="#{listaMaterialesBean.añadirMaterialTintoreria()}" disabled="#{listaMaterialesBean.dsbEdicion}"/>
+                            </div>
+                            <p:dataTable  id="dtMaterialEstiloTintoreria" var="materialTi" value="#{listaMaterialesBean.materialEstiloTintoreriaList}"
+                                          emptyMessage="Sin materiales" size="small" draggableRows="#{!listaMaterialesBean.dsbEdicion}">>
+
+                                <p:ajax event="rowReorder" listener="#{listaMaterialesBean.onRowReorderTintoreria}" update=":form:msgs,dtMaterialEstiloTintoreria"/>
+                                <p:column headerText="Código" class="w-2">
+                                    <h:outputText  value="#{materialTi.idMaterial.codigo}"/>
+                                </p:column>
+                                <p:column headerText="Nombre" class="w-4">
+                                    <h:outputText  value="#{materialTi.idMaterial.nombre}"/>
+                                </p:column>
+                                <p:column headerText="Proveedor" class="w-2">
+                                    <h:outputText  value="#{materialTi.idMaterial.idProveedor.nombre}"/>
+                                </p:column>
+                                <p:column headerText="Observaciones" class="w-4">
+                                    <h:outputText  value="#{materialTi.observaciones}"/>
+                                </p:column>
+                                <p:column style="width:3rem;text-align: center">
+                                    <p:commandButton update="dtMaterialEstiloTintoreria" action="#{listaMaterialesBean.borrarMaterialEstilo('TINTORERIA')}" 
+                                   process="@this,dtMaterialEstiloTintoreria" icon="pi pi-times" title="Borrar material" disabled="#{listaMaterialesBean.dsbEdicion}">
+                                        <f:setPropertyActionListener value="#{materialTi}"
+                                                                     target="#{listaMaterialesBean.materialEstiloSeleccionado}"/>
+                                    </p:commandButton>
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:tab>
+                        <p:tab title="4. Acabados">
+                            <div class="mb-2 flex align-items-center">
+                                <p:selectOneMenu id="somAcab" value="#{listaMaterialesBean.materialEstiloAcabados.idMaterial}" class="w-7"  filter="true"
+                                                 converter="entityConverter" filterMatchMode="contains" autoWidth="false">
+                                    <f:selectItem itemLabel="Seleccione material" itemValue="#{null}"/>
+                                    <f:selectItems value="#{listaMaterialesBean.materialListAcabados}"
+                                                   var="materialVar4"
+                                                   itemValue="#{materialVar4}"
+                                                   itemLabel="#{materialVar4.codigo} #{materialVar4.nombre} #{materialVar4.idProveedor.nombre}"
+                                                   />   
+                                </p:selectOneMenu>
+                                <p:inputText class="m-2 w-3" value="#{listaMaterialesBean.materialEstiloAcabados.observaciones}" placeholder="Observaciones" id="inObsAcab"/>
+                                <p:commandButton value="Añadir" process="@this, somAcab, inObsAcab" update="dtMaterialEstiloAcabados, somAcab, inObsAcab"
+                                                 actionListener="#{listaMaterialesBean.añadirMaterialAcabados()}" disabled="#{listaMaterialesBean.dsbEdicion}"/>
+                            </div>
+                            <p:dataTable  id="dtMaterialEstiloAcabados" var="materialAc" value="#{listaMaterialesBean.materialEstiloAcabadosList}"
+                                          emptyMessage="Sin materiales" size="small" draggableRows="#{!listaMaterialesBean.dsbEdicion}">>
+                                <p:ajax event="rowReorder" listener="#{listaMaterialesBean.onRowReorderAcabados}" update=":form:msgs,dtMaterialEstiloAcabados"/>
+                                <p:column headerText="Código" class="w-2">
+                                    <h:outputText  value="#{materialAc.idMaterial.codigo}"/>
+                                </p:column>
+                                <p:column headerText="Nombre" class="w-4">
+                                    <h:outputText  value="#{materialAc.idMaterial.nombre}"/>
+                                </p:column>
+                                <p:column headerText="Proveedor" class="w-2">
+                                    <h:outputText  value="#{materialAc.idMaterial.idProveedor.nombre}"/>
+                                </p:column>
+                                <p:column headerText="Observaciones" class="w-4">
+                                    <h:outputText  value="#{materialAc.observaciones}"/>
+                                </p:column>
+                                <p:column style="width:3rem;text-align: center">
+                                    <p:commandButton update="dtMaterialEstiloAcabados" action="#{listaMaterialesBean.borrarMaterialEstilo('ACABADOS')}" 
+                                      process="@this,dtMaterialEstiloAcabados" icon="pi pi-times" title="Borrar material" disabled="#{listaMaterialesBean.dsbEdicion}" >
+                                        <f:setPropertyActionListener value="#{materialAc}"
+                                                                     target="#{listaMaterialesBean.materialEstiloSeleccionado}"/>
+                                    </p:commandButton>
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:tab>
+
+                    </p:accordionPanel>
+                    <div class="m-2">
+                        <p:commandButton value="Imprimir"
+                                         process="@this"                          
+                                         ajax="false" disabled="#{listaMaterialesBean.dsbImpresion}"
+                                         actionListener="#{listaMaterialesBean.imprimirReporte()}"
+                                         update="@form"/>
+                    </div>
+                </div>
+
+            </div>
+        </p:panel>
+        <div class="flex align-items-end justify-content-between">
+            <p:commandButton class="flex border-round m-2" process="@this" update="@form" icon="pi pi-arrow-left"
+                          value="Datos generales" action="#{listaMaterialesBean.redirect('datos_generales')}"/>
+            <p:commandButton class="flex border-round m-2" process="@this" update="@form" icon="pi pi-home" iconPos="right"
+                          value="Inicio" action="principal?faces-redirect=true"/>
+            <p:commandButton class="flex border-round m-2" process="@this" update="@form" icon="pi pi-arrow-right" iconPos="right"
+                          value="Tejido en circulares" action="#{listaMaterialesBean.redirect('tejido_circulares')}"/>
+        </div>
+    </h:form>
+</html>

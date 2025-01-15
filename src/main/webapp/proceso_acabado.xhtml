@@ -1,0 +1,367 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>Proceso acabados</title>  
+        <link rel="shortcut icon" type="image/png" href="images/favicon.png" />
+        <link rel="stylesheet" href="https://unpkg.com/primeflex@^3/primeflex.css"/>
+    </h:head>
+
+    <style type="text/css">
+
+    </style>
+
+    <h:form id="form">
+        <p:growl showDetail="true" id="msgs" />
+        <p:panel header="Proceso acabados" >
+            <div class="flex justify-content-center" >
+                <div class="card flex align-items-start justify-content-center w-11" >
+                    <div class="card-container w-6 ml-4">
+                        <div class="flex align-items-start justify-content-start">
+                            <p:outputLabel value="Estilo" class="font-medium text-xl m-2"/>
+                            <p:outputLabel value="#{procesoAcabadoBean.estilo.estilo}" class="font-medium text-xl m-2"/>
+                        </div>
+                        <div class="flex align-items-center justify-content-start">
+                            <p:outputLabel value="Referencia:" class="m-2"/>
+                            <p:outputLabel id="inRef" value="#{procesoAcabadoBean.estilo.referencias}" class="m-2 w-7" />
+                        </div>
+                        <div class="mt-3">
+                            <p:fileUpload mode="advanced"
+                                          multiple="false"  label="Subir foto" auto="true" disabled="#{procesoAcabadoBean.dsbEdicion}"
+                                          sizeLimit="10240000" allowTypes="/(\.|\/)(jpg|jpeg|png)$/"
+                                          invalidSizeMessage="Archivo muy pesado" process="@this"
+                                          invalidFileMessage="Formatos aceptados: jpg, jpeg, png."
+                                          update="panImg"
+                                          listener="#{procesoAcabadoBean.handleFileUpload}"/>
+                        </div>
+                        <div class="card mt-2" id="divImg">
+                            <h:panelGroup id="panImg">
+                                <p:graphicImage value="http://192.0.0.121:8080/Fitchi/Cargues/Acabado/#{procesoAcabadoBean.procesoAcabado.imagen}" class="w-full"
+                                                rendered="#{procesoAcabadoBean.procesoAcabado.imagen == null ? false : true}" id="imgEst"/>
+                            </h:panelGroup>
+                        </div>
+                    </div>
+                    <div class="card-container w-6 ml-4" >
+                        <p:dataTable id="dtParametro" value="#{procesoAcabadoBean.parametroPrendaEstiloList}"
+                                     var="parametroVar"
+                                     emptyMessage="Sin parámetros" >
+                            <p:column headerText="No." class="w-3">
+                                <h:outputText  value="#{parametroVar.orden + 1}"/>
+                            </p:column>
+                            <p:column headerText="Partes del producto">
+                                <h:outputText  value="#{parametroVar.idParametroPrenda.nombre}"/>
+                            </p:column>
+                        </p:dataTable>
+                       
+                        <div class="mt-5">
+                            <p:outputLabel value="Observaciones:" class="m-2 "/>
+                            <p:inputTextarea id="inObs" value="#{procesoAcabadoBean.procesoAcabado.observaciones}" class="m-2 w-full" />
+                        </div>
+                        <div class="mt-2">
+                            <p:commandButton value="Guardar" process="@this,inObs" update="msgs" disabled="#{procesoAcabadoBean.dsbEdicion}"
+                                             actionListener="#{procesoAcabadoBean.guardarObservacion()}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <div class="justify-content-center" >
+                <div class="card flex  align-items-center justify-content-center">
+                    <p:accordionPanel multiple="true" widgetVar="multiple"  activeIndex="0,1,2">
+                        <p:tab title="Revisión">
+                            <div class="flex align-items-center">
+                                <p:inputTextarea id="inOperRevi" value="#{procesoAcabadoBean.revision.operacion}" placeholder="Operación" class="w-3"/>
+                                <p:selectOneMenu id="somMaqRevi" value="#{procesoAcabadoBean.revision.idMaquina}" class="w-2 m-1"  filter="true"
+                                                 converter="entityConverter" filterMatchMode="contains" autoWidth="false">
+                                    <f:selectItem itemLabel="Máquina" itemValue="#{null}"/>
+                                    <f:selectItems value="#{procesoAcabadoBean.maquinaConfeccionList}"
+                                                   var="maquinaVar"
+                                                   itemValue="#{maquinaVar}"
+                                                   itemLabel="#{maquinaVar.nombre}"
+                                                   />   
+                                </p:selectOneMenu>
+                                <p:selectOneMenu id="somAguRevi" value="#{procesoAcabadoBean.revision.idAguja}" class="m-1"  filter="true"
+                                                 converter="entityConverter" filterMatchMode="contains" autoWidth="false">
+                                    <f:selectItem itemLabel="Aguja" itemValue="#{null}"/>
+                                    <f:selectItems value="#{procesoAcabadoBean.agujaList}"
+                                                   var="agujaVar"
+                                                   itemValue="#{agujaVar}"
+                                                   itemLabel="#{agujaVar.nombre}"
+                                                   />   
+                                </p:selectOneMenu>
+                                <p:inputNumber class="m-1" value="#{procesoAcabadoBean.revision.agujaCantidad}" placeholder="Cantidad" id="inAguRevi" size="3"/>
+                                <p:inputText class="w-1 m-1" value="#{procesoAcabadoBean.revision.puntadaPulgada}" placeholder="Punt x pul." id="inCanRevi"/>
+                                <p:selectOneMenu id="somMatRevi" value="#{procesoAcabadoBean.revision.idMaterial}" class="w-2"  filter="true"
+                                                 converter="entityConverter" filterMatchMode="contains" autoWidth="false" >
+                                    <f:selectItem itemLabel="Seleccione material" itemValue="#{null}"/>
+                                    <f:selectItems value="#{procesoAcabadoBean.materialEstiloAcabadoList}"
+                                                   var="materialVar"
+                                                   itemValue="#{materialVar}"
+                                                   itemLabel="#{materialVar.idMaterial.codigo} #{materialVar.idMaterial.nombre}"/>   
+                                </p:selectOneMenu>
+                                <p:selectBooleanCheckbox value="#{procesoAcabadoBean.revision.negrilla}" itemLabel="Negrilla" id="checkNegrilla" class="ml-2"/>
+                                <p:commandButton value="Añadir" process="@this,inOperRevi,somMaqRevi,somAguRevi,inAguRevi,inCanRevi,somMatRevi,checkNegrilla"
+                                                 update="dtRevision,inOperRevi,somMaqRevi,somAguRevi,inAguRevi,inCanRevi,somMatRevi,checkNegrilla"
+                                                 disabled="#{procesoAcabadoBean.dsbEdicion}"
+                                                 class="m-1" actionListener="#{procesoAcabadoBean.añadirRevision()}"/>
+                            </div>
+                            <p:dataTable  id="dtRevision" var="revisionVar" value="#{procesoAcabadoBean.revisionList}" editable="true"
+                                          emptyMessage="Sin operaciones" size="small" draggableRows="#{!procesoAcabadoBean.dsbEdicion}">
+                                <p:ajax event="rowReorder" listener="#{procesoAcabadoBean.onRowReorderRevision}" update="dtRevision"/>
+                                <p:ajax event="rowEdit" listener="#{procesoAcabadoBean.onRowEdit}" update="dtRevision,:form:msgs"/>
+                                <p:column headerText="Operación" class="">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{revisionVar.operacion}" class="#{revisionVar.negrilla eq true ? 'font-bold' : 'font-normal'}"/>
+                                        </f:facet>
+                                        <f:facet name="input" >
+                                            <p:inputTextarea class="w-full" value="#{revisionVar.operacion}"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Máquina" class="" style="width: 150px">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{revisionVar.idMaquina.nombre}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu value="#{revisionVar.idMaquina}" filter="true"
+                                                             converter="entityConverter" filterMatchMode="contains" autoWidth="true">
+                                                <f:selectItems value="#{procesoAcabadoBean.maquinaConfeccionList}" var="maquinaVar"
+                                                               itemValue="#{maquinaVar}" itemLabel="#{maquinaVar.nombre}"/>   
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Aguja" class="" style="width: 60px">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{revisionVar.idAguja.nombre}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu value="#{revisionVar.idAguja}" converter="entityConverter" autoWidth="false">
+                                                <f:selectItems value="#{procesoAcabadoBean.agujaList}" var="agujaVar"
+                                                               itemValue="#{agujaVar}" itemLabel="#{agujaVar.nombre}"/>   
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Cant." class="" style="width: 60px">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{revisionVar.agujaCantidad}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:inputText   value="#{revisionVar.agujaCantidad}"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Punt x Pulg" class="" style="width: 100px">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{revisionVar.puntadaPulgada}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:inputText   value="#{revisionVar.puntadaPulgada}"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Material" class="w-3" style="width: 100px">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{revisionVar.idMaterial.idMaterial.codigo} #{revisionVar.idMaterial.idMaterial.nombre}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu value="#{revisionVar.idMaterial}" filter="true"
+                                                             converter="entityConverter" filterMatchMode="contains" autoWidth="false" >
+                                                <f:selectItem itemLabel="Material" itemValue="#{null}"/>
+                                                <f:selectItems value="#{procesoAcabadoBean.materialEstiloAcabadoList}"
+                                                               var="materialVar"
+                                                               itemValue="#{materialVar}"
+                                                               itemLabel="#{materialVar.idMaterial.codigo} #{materialVar.idMaterial.nombre}"/>   
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column style="width:2rem">
+                                    <p:rowEditor editTitle="Editar" cancelTitle="Cancelar" saveTitle="Guardar"/>
+                                </p:column>
+                                <p:column style="width:3rem;text-align: center">
+                                    <p:commandButton update="dtRevision" action="#{procesoAcabadoBean.borrarFase(0)}" disabled="#{procesoAcabadoBean.dsbEdicion}"
+                                                     process="@this,dtRevision" icon="pi pi-times" title="Borrar fase"  >
+                                        <f:setPropertyActionListener value="#{revisionVar}"
+                                                                     target="#{procesoAcabadoBean.faseSeleccionada}"/>
+                                        <p:confirm header="Confirmación" message="¿Está segura de borrar el registro?" icon="pi pi-info-circle"/>
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </p:tab>
+                        <p:tab title="Empaque">
+                            <div class="flex align-items-center">
+                                <p:inputTextarea id="inOperEmpa" value="#{procesoAcabadoBean.empaque.operacion}" placeholder="Operación" class="w-3"/>
+                                <p:selectOneMenu id="somMaqEmpa" value="#{procesoAcabadoBean.empaque.idMaquina}" class="w-2 m-1"  filter="true"
+                                                 converter="entityConverter" filterMatchMode="contains" autoWidth="false">
+                                    <f:selectItem itemLabel="Máquina" itemValue="#{null}"/>
+                                    <f:selectItems value="#{procesoAcabadoBean.maquinaConfeccionList}"
+                                                   var="maquinaVar2"
+                                                   itemValue="#{maquinaVar2}"
+                                                   itemLabel="#{maquinaVar2.nombre}"
+                                                   />   
+                                </p:selectOneMenu>
+                                <p:selectOneMenu id="somAguEmpa" value="#{procesoAcabadoBean.empaque.idAguja}" class="m-1"  filter="true"
+                                                 converter="entityConverter" filterMatchMode="contains" autoWidth="false">
+                                    <f:selectItem itemLabel="Aguja" itemValue="#{null}"/>
+                                    <f:selectItems value="#{procesoAcabadoBean.agujaList}"
+                                                   var="agujaVar2"
+                                                   itemValue="#{agujaVar2}"
+                                                   itemLabel="#{agujaVar2.nombre}"
+                                                   />   
+                                </p:selectOneMenu>
+                                <p:inputNumber class="m-1" value="#{procesoAcabadoBean.empaque.agujaCantidad}" placeholder="Cantidad" id="inAguEmpa" size="3"/>
+                                <p:inputText class="w-1 m-1" value="#{procesoAcabadoBean.empaque.puntadaPulgada}" placeholder="Punt x pul." id="inCanEmpa"/>
+                                <p:selectOneMenu id="somMatEmpa" value="#{procesoAcabadoBean.empaque.idMaterial}" class="w-2"  filter="true"
+                                                 converter="entityConverter" filterMatchMode="contains" autoWidth="false" >
+                                    <f:selectItem itemLabel="Seleccione material" itemValue="#{null}"/>
+                                    <f:selectItems value="#{procesoAcabadoBean.materialEstiloAcabadoList}"
+                                                   var="materialVar2"
+                                                   itemValue="#{materialVar2}"
+                                                   itemLabel="#{materialVar2.idMaterial.codigo} #{materialVar2.idMaterial.nombre}"/>   
+                                </p:selectOneMenu>
+                                <p:selectBooleanCheckbox value="#{procesoAcabadoBean.empaque.negrilla}" itemLabel="Negrilla" id="checkNegrillaEmpa" class="ml-2"/>
+                                <p:commandButton value="Añadir" process="@this,inOperEmpa,somMaqEmpa,somAguEmpa,inAguEmpa,inCanEmpa,somMatEmpa,checkNegrillaEmpa"
+                                                 update="dtEmpaque,inOperEmpa,somMaqEmpa,somAguEmpa,inAguEmpa,inCanEmpa,somMatEmpa,checkNegrillaEmpa"
+                                                 disabled="#{procesoAcabadoBean.dsbEdicion}"
+                                                 class="m-1" actionListener="#{procesoAcabadoBean.añadirEmpaque()}"/>
+                                     
+                            </div>
+                            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+                                <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes" />
+                            </p:confirmDialog>
+                            <p:dataTable  id="dtEmpaque" var="empaqueVar" value="#{procesoAcabadoBean.empaqueList}" editable="true"
+                                          emptyMessage="Sin operaciones" size="small" draggableRows="#{!procesoAcabadoBean.dsbEdicion}">
+                                <p:ajax event="rowReorder" listener="#{procesoAcabadoBean.onRowReorderEmpaque}" update="dtEmpaque"/>
+                                <p:ajax event="rowEdit" listener="#{procesoAcabadoBean.onRowEdit}" update="dtEmpaque,:form:msgs"/>
+                                <p:column headerText="Operación" class="">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{empaqueVar.operacion}" class="#{empaqueVar.negrilla eq true ? 'font-bold' : 'font-normal'}"/>/>
+                                        </f:facet>
+                                        <f:facet name="input" >
+                                            <p:inputTextarea class="w-full" value="#{empaqueVar.operacion}"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Máquina" class="" style="width: 150px">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{empaqueVar.idMaquina.nombre}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu value="#{empaqueVar.idMaquina}" filter="true"
+                                                             converter="entityConverter" filterMatchMode="contains" autoWidth="true">
+                                                <f:selectItems value="#{procesoAcabadoBean.maquinaConfeccionList}" var="maquinaVar"
+                                                               itemValue="#{maquinaVar}" itemLabel="#{maquinaVar.nombre}"/>   
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Aguja" class="" style="width: 60px">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{empaqueVar.idAguja.nombre}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu value="#{empaqueVar.idAguja}" converter="entityConverter" autoWidth="false">
+                                                <f:selectItems value="#{procesoAcabadoBean.agujaList}" var="agujaVar"
+                                                               itemValue="#{agujaVar}" itemLabel="#{agujaVar.nombre}"/>   
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Cant." class="" style="width: 60px">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{empaqueVar.agujaCantidad}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:inputText   value="#{empaqueVar.agujaCantidad}"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Punt x Pulg" class="" style="width: 100px">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{empaqueVar.puntadaPulgada}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:inputText   value="#{empaqueVar.puntadaPulgada}"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Material" class="w-3" style="width: 100px">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText  value="#{empaqueVar.idMaterial.idMaterial.codigo} #{empaqueVar.idMaterial.idMaterial.nombre}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu value="#{empaqueVar.idMaterial}" filter="true"
+                                                             converter="entityConverter" filterMatchMode="contains" autoWidth="false" >
+                                                <f:selectItem itemLabel="Material" itemValue="#{null}"/>
+                                                <f:selectItems value="#{procesoAcabadoBean.materialEstiloAcabadoList}"
+                                                               var="materialVar"
+                                                               itemValue="#{materialVar}"
+                                                               itemLabel="#{materialVar.idMaterial.codigo} #{materialVar.idMaterial.nombre}"/>   
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>    
+                                <p:column style="width:2rem">
+                                    <p:rowEditor editTitle="Editar" cancelTitle="Cancelar" saveTitle="Guardar"/>
+                                </p:column>
+                                <p:column style="width:3rem;text-align: center">
+                                    <p:commandButton update="dtEmpaque" action="#{procesoAcabadoBean.borrarFase(1)}" disabled="#{procesoAcabadoBean.dsbEdicion}"
+                                                     process="@this,dtEmpaque" icon="pi pi-times" title="Borrar fase"  >
+                                        <f:setPropertyActionListener value="#{empaqueVar}"
+                                                                     target="#{procesoAcabadoBean.faseSeleccionada}"/>
+                                        <p:confirm header="Confirmación" message="¿Está segura de borrar el registro?" icon="pi pi-info-circle"/>
+                                    </p:commandButton>
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:tab>
+                    </p:accordionPanel>
+                </div>
+            </div>
+            <br/>
+
+        </p:panel>
+        
+    </h:form>
+    <h:form >
+
+        <div class="flex justify-content-center" >
+            <div class="card flex align-items-start justify-content-start w-10" >
+                <div class="card-container ml-1 w-full">
+                    <div class="ml-10">
+                        <p:commandButton value="Imprimir"
+                                         process="@this"                          
+                                         ajax="false" disabled="#{procesoAcabadoBean.dsbImpresion}"
+                                         actionListener="#{procesoAcabadoBean.imprimirReporte()}"
+                                         update="@form"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex align-items-end justify-content-between mt-3">
+            <p:commandButton class="flex border-round m-2" process="@this" update="@form" icon="pi pi-arrow-left"
+                          value="Procesos de confección" action="#{procesoAcabadoBean.redirect('proceso_confeccion')}"/>
+            <p:commandButton class="flex border-round m-2" process="@this" update="@form" icon="pi pi-home" iconPos="right"
+                          value="Inicio" action="principal?faces-redirect=true"/>
+            <p:commandButton class="flex border-round m-2" process="@this" update="@form" icon="pi pi-arrow-right" iconPos="right"
+                          value="Insumos terceros" action="#{procesoAcabadoBean.redirect('insumo_tercero')}"/>
+        </div>
+    </h:form>
+</html>

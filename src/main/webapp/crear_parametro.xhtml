@@ -1,0 +1,186 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>Crear parámetros</title>  
+        <link rel="shortcut icon" type="image/png" href="images/favicon.png" />
+        <link rel="stylesheet" href="https://unpkg.com/primeflex@^3/primeflex.css"/>
+    </h:head>
+
+    <style type="text/css">
+
+
+    </style>
+
+    <h:form id="form">
+        <p:growl showDetail="true" id="msgs" />
+        <p:panel header="Creación de materiales y proveedores">
+            <div class="card">
+
+                <div class="flex align-items-start justify-content-start card-container ">
+
+                    <div class="m-2">
+                        <p:dataTable  id="dtParametroPrenda" value="#{crearParametroBean.parametroPrendaList}"
+                                      paginatorPosition="bottom"
+                                      paginator="true" rows="10" size="small"
+                                      var="parametroPrendaVar" >
+                            <f:facet name="header" >
+                                Parámetro prenda (Datos generales)
+                            </f:facet>
+                            <p:column headerText="Nombre" filterBy="#{parametroPrendaVar.nombre}" filterMatchMode="contains">
+                                <h:outputText value="#{parametroPrendaVar.nombre}" />
+                            </p:column>
+                            <f:facet name="footer" >
+                                <p:commandButton value="Crear parámetro"  actionListener="#{crearParametroBean.abrirCrearPP()}"
+                                                 process="@this" update="dlgs:crePP" class="m-1"/>
+                            </f:facet>
+                        </p:dataTable>
+                    </div>
+                    
+                     <div class="m-2">
+                        <p:dataTable  id="dtHiloParametro" value="#{crearParametroBean.hiloParametroList}"
+                                      paginatorPosition="bottom"
+                                      paginator="true" rows="10" size="small"
+                                      var="hiloParametroVar" >
+                            <f:facet name="header" >
+                                Hilo parámetro (Tejido Circulares, parámetros tallaje)
+                            </f:facet>
+                            <p:column headerText="Nombre" filterBy="#{hiloParametroVar.nombre}" filterMatchMode="contains">
+                                <h:outputText value="#{hiloParametroVar.nombre}" />
+                            </p:column>
+                            <f:facet name="footer" >
+                                <p:commandButton value="Crear parámetro"  actionListener="#{crearParametroBean.abrirCrearHP()}"
+                                                 process="@this" update="dlgs:creHP" class="m-1"/>
+                            </f:facet>
+                        </p:dataTable>
+                    </div>
+                </div>
+                <p:divider />
+                <div class="flex align-items-start justify-content-start card-container ">
+                    <div class="m-2">
+                        <p:dataTable  id="dtControlMedidasParametro" value="#{crearParametroBean.controlMedidasParametroList}"
+                                      paginatorPosition="bottom"
+                                      paginator="true" rows="10" size="small"
+                                      var="cmParametroVar" >
+                            <f:facet name="header" >
+                                Parámetro (Control Medidas)
+                            </f:facet>
+                            <p:column headerText="Nombre" filterBy="#{cmParametroVar.nombre}" filterMatchMode="contains">
+                                <h:outputText value="#{cmParametroVar.nombre}" />
+                            </p:column>
+                            <f:facet name="footer" >
+                                <p:commandButton value="Crear parámetro"  actionListener="#{crearParametroBean.abrirCrearCMP()}"
+                                                 process="@this" update="dlgs:creCMP" class="m-1"/>
+                            </f:facet>
+                        </p:dataTable>
+                    </div>
+                    
+                    <div class="m-2">
+                        <p:dataTable  id="dtColor" value="#{crearParametroBean.colorList}"
+                                      paginatorPosition="bottom"
+                                      paginator="true" rows="10" size="small"
+                                      var="colorVar" >
+                            <f:facet name="header" >
+                                Colores
+                            </f:facet>
+                            <p:column headerText="Nombre" filterBy="#{colorVar.nombre}" filterMatchMode="contains">
+                                <h:outputText value="#{colorVar.nombre}" />
+                            </p:column>
+                            <f:facet name="footer" >
+                                <p:commandButton value="Crear color"  actionListener="#{crearParametroBean.abrirCrearColor()}"
+                                                 process="@this" update="dlgs:creCol" class="m-1"/>
+                            </f:facet>
+                        </p:dataTable>
+                    </div>
+                </div>
+                <p:divider />
+                <div class="flex align-items-start justify-content-start card-container ">
+                    <div class="m-2 w-6">
+                        <p:dataTable  id="dtTubularDoblez" value="#{crearParametroBean.tubularDoblezList}"
+                                      paginatorPosition="bottom"
+                                      paginator="true" rows="10" size="small"
+                                      var="tdParametroVar" >
+                            <f:facet name="header" >
+                                Tubular doblez
+                            </f:facet>
+                            <p:column headerText="Nombre">
+                                <h:outputText value="#{tdParametroVar.nombre}" />
+                            </p:column>
+                            <f:facet name="footer" >
+                                <p:commandButton value="Crear tubular"  actionListener="#{crearParametroBean.abrirCrearTD()}"
+                                                 process="@this" update="dlgs:creTD" class="m-1"/>
+                            </f:facet>
+                        </p:dataTable>
+                    </div>
+                </div>
+            </div>
+        </p:panel>
+
+
+    </h:form>
+    <h:form id="dlgs" >
+
+        <p:dialog header="Nuevo parámetro prenda" widgetVar="dlgCrearPP" id="crePP" modal="true">
+            <h:panelGrid columns="1">
+                <h:panelGrid columns="2">
+                    <p:outputLabel value="Nombre"/>
+                    <p:inputText value="#{crearParametroBean.parametroPrenda.nombre}" size="30"/>
+                </h:panelGrid>
+                <p:divider />
+                <p:commandButton value="Crear" actionListener="#{crearParametroBean.crearParametroPrenda()}"
+                                 class="mt-3" process="@this,crePP" update="form:dtParametroPrenda,crePP,form:msgs"/>
+            </h:panelGrid>
+        </p:dialog>
+        
+        <p:dialog header="Nuevo hilo parámetro" widgetVar="dlgCrearHP" id="creHP" modal="true">
+            <h:panelGrid columns="1">
+                <h:panelGrid columns="2">
+                    <p:outputLabel value="Nombre"/>
+                    <p:inputText value="#{crearParametroBean.hiloParametro.nombre}" size="30"/>
+                </h:panelGrid>
+                <p:divider />
+                <p:commandButton value="Crear" actionListener="#{crearParametroBean.crearHiloParametro()}"
+                                 class="mt-3" process="@this,creHP" update="form:dtHiloParametro,creHP,form:msgs"/>
+            </h:panelGrid>
+        </p:dialog>
+        
+        <p:dialog header="Nuevo control medidas parámetro" widgetVar="dlgCrearCMP" id="creCMP" modal="true">
+            <h:panelGrid columns="1">
+                <h:panelGrid columns="2">
+                    <p:outputLabel value="Nombre"/>
+                    <p:inputText value="#{crearParametroBean.controlMedidasParametro.nombre}" size="30"/>
+                </h:panelGrid>
+                <p:divider />
+                <p:commandButton value="Crear" actionListener="#{crearParametroBean.crearControlMedidasParametro()}"
+                                 class="mt-3" process="@this,creCMP" update="form:dtControlMedidasParametro,creCMP,form:msgs"/>
+            </h:panelGrid>
+        </p:dialog>
+        
+        <p:dialog header="Nuevo color" widgetVar="dlgCrearColor" id="creCol" modal="true">
+            <h:panelGrid columns="1">
+                <h:panelGrid columns="2">
+                    <p:outputLabel value="Nombre"/>
+                    <p:inputText value="#{crearParametroBean.color.nombre}" size="30"/>
+                </h:panelGrid>
+                <p:divider />
+                <p:commandButton value="Crear" actionListener="#{crearParametroBean.crearColor()}"
+                                 class="mt-3" process="@this,creCol" update="form:dtColor,creCol,form:msgs"/>
+            </h:panelGrid>
+        </p:dialog>
+        
+        <p:dialog header="Nuevo tubular doblez" widgetVar="dlgCrearTD" id="creTD" modal="true">
+            <h:panelGrid columns="1">
+                <h:panelGrid columns="2">
+                    <p:outputLabel value="Nombre"/>
+                    <p:inputText value="#{crearParametroBean.tubularDoblez.nombre}" size="30"/>
+                </h:panelGrid>
+                <p:divider />
+                <p:commandButton value="Crear" actionListener="#{crearParametroBean.crearTubularDoblez()}"
+                                 class="mt-3" process="@this,creTD" update="form:dtTubularDoblez,creTD,form:msgs"/>
+            </h:panelGrid>
+        </p:dialog>
+
+    </h:form>
+</html>
