@@ -11,7 +11,9 @@ import facade.ProveedorFacade;
 import facade.UnidadFacade;
 import facade.UsuarioFacade;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -26,8 +28,8 @@ import org.primefaces.PrimeFaces;
  */
 @Named
 @ViewScoped
-public class CrearMaterialBean implements Serializable{
-    
+public class CrearMaterialBean implements Serializable {
+
     @EJB
     private MaterialFacade materialFacade;
     @EJB
@@ -36,7 +38,7 @@ public class CrearMaterialBean implements Serializable{
     private UnidadFacade unidadFacade;
     @EJB
     private AreaFacade areaFacade;
-    
+
     private Material material;
     private Proveedor proveedor;
     private Unidad unidad;
@@ -44,54 +46,67 @@ public class CrearMaterialBean implements Serializable{
     private List<Proveedor> proveedorList;
     private List<Unidad> unidadList;
     private List<Area> areaList;
-    
+
     @PostConstruct
     public void init() {
         material = new Material();
         llenarListas();
     }
-    
+
     public void abrirCrearMaterial() {
         material = new Material();
         PrimeFaces.current().executeScript("PF('dlgCrearMaterial').show();");
     }
-    
+
     public void abrirCrearProveedor() {
         proveedor = new Proveedor();
         PrimeFaces.current().executeScript("PF('dlgCrearProveedor').show();");
     }
-    
+
     private void llenarListas() {
         materialList = materialFacade.findAll();
         proveedorList = proveedorFacade.findAll();
         unidadList = unidadFacade.findAll();
         areaList = areaFacade.findAll();
     }
-    
+
     public void borrarMaterial() {
         materialFacade.remove(material);
         info("material borrado");
     }
-    
+
     public void crearMaterial() {
-        materialFacade.create(material);
-        materialList.add(material);
-        info("Material creado");
+        Material materialExistente;
+        String namedQuery = "Material.findByCodigo";
+        Map<String, Object> parametros = new HashMap<>();
+        parametros.put("codigo", material.getCodigo());
+        materialExistente =  materialFacade.getObject(namedQuery, parametros);
+        if (materialExistente != null) {
+            advertencia("El material ya existe!");
+        } else {
+            materialFacade.create(material);
+            materialList.add(material);
+            info("Material creado");
+        }
     }
-    
+
     public void crearProveedor() {
         proveedorFacade.create(proveedor);
         info("Proveedor creado");
     }
-    
+
     public void crearUnidad() {
         unidadFacade.create(unidad);
         info("Unidad de medida creada");
     }
-    
+
     public void info(String mensaje) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
-                FacesMessage.SEVERITY_INFO, "Informacion", mensaje));
+                FacesMessage.SEVERITY_INFO, "Información", mensaje));
+    }
+
+    public void advertencia(String mensaje) {
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia", mensaje));
     }
 
     public Material getMaterial() {
@@ -150,7 +165,4 @@ public class CrearMaterialBean implements Serializable{
         this.unidadList = unidadList;
     }
 
-    
-    
-    
 }

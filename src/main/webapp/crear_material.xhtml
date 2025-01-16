@@ -118,8 +118,9 @@
                                    itemLabel="#{areaVar.nombre}"/>
                 </p:selectOneMenu>
                 <p:divider />
-                <p:commandButton value="Crear" actionListener="#{crearMaterialBean.crearMaterial()}"
-                                 class="mt-3" process="@this,creMat" update="form:dtMaterial,creMat,form:msgs"/>
+                <p:commandButton value="Crear" class="mt-3" process="@this,creMat"
+                                   actionListener="#{crearMaterialBean.crearMaterial()}"
+                                   update="form:dtMaterial,creMat,form:msgs"/>
 
             </h:panelGrid>
 
