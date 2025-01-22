@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="control_medidas" printOrder="Horizontal" pageWidth="612" pageHeight="792" columnWidth="582" leftMargin="15" rightMargin="15" topMargin="15" bottomMargin="15" isSummaryWithPageHeaderAndFooter="true" uuid="c63ad8ec-e4db-4b5f-bfd8-9f26a52ef47b">
 	<property name="ireport.zoom" value="1.7715610000000062"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="387"/>
+	<property name="ireport.y" value="54"/>
 	<parameter name="ID_ESTILO" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -109,8 +109,8 @@ CONTROL DE MEDIDAS]]></text>
 				<reportElement positionType="Float" stretchType="RelativeToTallestObject" mode="Opaque" x="2" y="5" width="281" height="309" uuid="87723012-dc85-46d4-bf73-14d3087383d0"/>
 				<imageExpression><![CDATA["C:\\Cargues\\Medidas\\"+$F{imagen}]]></imageExpression>
 			</image>
-			<textField isBlankWhenNull="true">
-				<reportElement x="298" y="71" width="262" height="71" uuid="b4113669-7429-4f6a-b4ca-2ec33ca661bb"/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="298" y="71" width="262" height="71" isPrintWhenDetailOverflows="true" uuid="b4113669-7429-4f6a-b4ca-2ec33ca661bb"/>
 				<box leftPadding="2">
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
