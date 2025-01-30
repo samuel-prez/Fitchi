@@ -74,13 +74,13 @@
                             <p:ajax event="rowReorder" listener="#{controlMedidasBean.onRowReorderRevision}" update="dtParametro"/>
                             <p:ajax event="rowSelect" process="@this, dtParametro" update="btnParametroEdi"/>
                             <p:ajax event="rowUnselect" process="@this, dtParametro" update="btnParametroEdi"/>
-                            <p:column headerText="Orden" style="width:40px">
+                            <p:column headerText="Orden" style="width:30px">
                                 <h:outputText  value="#{parametroVar.orden + 1}"/>
                             </p:column>
                             <p:column headerText="Medida a controlar" class="w-4">
                                 <h:outputText  value="#{parametroVar.idControlMedidasParametro.nombre}"/>
                             </p:column>
-                            <p:column headerText="Confección" style="width:90px">
+                            <p:column headerText="Confección" style="width:70px">
                                 <h:outputText   value="#{parametroVar.confeccion}">
                                     <f:convertNumber groupingUsed="true" minFractionDigits="0" />
                                 </h:outputText>
@@ -88,7 +88,7 @@
                             <p:column headerText="Toler." class="">
                                 <h:outputText  value="#{parametroVar.confeccionTolerancia}"/>
                             </p:column>
-                            <p:column headerText="Acabado" style="width:90px">
+                            <p:column headerText="Acabado" style="width:70px">
                                 <h:outputText  value="#{parametroVar.acabado}">
                                     <f:convertNumber groupingUsed="true" minFractionDigits="0" />
                                 </h:outputText>
