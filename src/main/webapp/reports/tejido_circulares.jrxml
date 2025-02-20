@@ -65,7 +65,7 @@ TEJIDOS CIRCULARES]]></text>
 		</band>
 	</title>
 	<detail>
-		<band height="106" splitType="Stretch">
+		<band height="115" splitType="Stretch">
 			<staticText>
 				<reportElement x="10" y="10" width="108" height="15" uuid="1b283f7f-110b-4b6b-a11a-ed6a77bc753b"/>
 				<textElement>
@@ -118,7 +118,7 @@ TEJIDOS CIRCULARES]]></text>
 				<text><![CDATA[Tipo de máquina]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="118" y="63" width="413" height="37" uuid="83696a24-eedc-4210-96f1-f535bc40ac23"/>
+				<reportElement stretchType="RelativeToTallestObject" x="118" y="63" width="413" height="47" isPrintWhenDetailOverflows="true" uuid="83696a24-eedc-4210-96f1-f535bc40ac23"/>
 				<box leftPadding="2">
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -154,7 +154,7 @@ TEJIDOS CIRCULARES]]></text>
 				<textFieldExpression><![CDATA[$F{maquina}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="10" y="103" width="560" height="1" forecolor="#444444" uuid="1a7ed67f-e9bf-4a18-b776-60dd0519b2d9"/>
+				<reportElement x="10" y="112" width="560" height="1" forecolor="#444444" uuid="1a7ed67f-e9bf-4a18-b776-60dd0519b2d9"/>
 			</line>
 			<textField isBlankWhenNull="true">
 				<reportElement x="118" y="46" width="122" height="15" uuid="db792ffd-0859-4241-baf4-bfdeaf908df3"/>
