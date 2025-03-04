@@ -77,7 +77,7 @@ public class CrearMaterialBean implements Serializable {
 
     public void crearMaterial() {
         Material materialExistente;
-        String namedQuery = "Material.findByCodigo";
+        String namedQuery = "Material.findByCodigoArea";
         Map<String, Object> parametros = new HashMap<>();
         parametros.put("codigo", material.getCodigo());
          parametros.put("area", material.getIdArea().getNombre());
