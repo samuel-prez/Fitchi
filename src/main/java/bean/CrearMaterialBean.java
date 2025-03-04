@@ -1,3 +1,4 @@
+package bean;
 
 import entity.Area;
 import entity.Estilo;
