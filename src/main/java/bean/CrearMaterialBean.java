@@ -80,9 +80,10 @@ public class CrearMaterialBean implements Serializable {
         String namedQuery = "Material.findByCodigo";
         Map<String, Object> parametros = new HashMap<>();
         parametros.put("codigo", material.getCodigo());
+         parametros.put("area", material.getIdArea().getNombre());
         materialExistente =  materialFacade.getObject(namedQuery, parametros);
         if (materialExistente != null) {
-            advertencia("El material ya existe!");
+            advertencia("El material ya existe en esta area!");
         } else {
             materialFacade.create(material);
             materialList.add(material);
