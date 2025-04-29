@@ -4,6 +4,8 @@
  */
 package bean;
 
+import facade.MarcaFacade;
+import entity.Marca;
 import entity.Usuario;
 import facade.EstiloFacade;
 import entity.Estilo;
@@ -36,6 +38,8 @@ public class PrincipalBean implements Serializable {
     private UsuarioFacade usuarioFacade;
     @EJB
     private EstiloFacade estiloFacade;
+    @EJB
+    private MarcaFacade marcaFacade;
 
     private Usuario usuario;
     private List<Estilo> listEstilo;
@@ -46,16 +50,19 @@ public class PrincipalBean implements Serializable {
     private final int idRolFull = 2;
     private final int idRolCalidad = 4;
     private String estiloRecibido;
+    private List<Marca> marcaList;
+    private Marca marcaSeleccionada;
 
     @PostConstruct
     public void init() {
         listEstilo = estiloFacade.findActivos();
         estilo = new Estilo();
         traerUsuario();
+        marcaList = marcaFacade.findAll();
         dsbConsulta = false;
         //validarVolver();
     }
-    
+
     public void validarVolver() {//si se usó el botón "volver" validará el estilo recibido
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         estiloRecibido = params.get("estiloRecibido");
@@ -87,6 +94,20 @@ public class PrincipalBean implements Serializable {
         }
     }
 
+    public boolean existeEstiloConMarca(String nombreEstilo, Marca marca) {
+        if (marca == null || nombreEstilo == null || nombreEstilo.trim().isEmpty()) {
+            return false;
+        }
+
+        String namedQuery = "Estilo.findByEstiloAndMarca";
+        Map<String, Object> parametros = new HashMap<>();
+        parametros.put("estilo", nombreEstilo);
+        parametros.put("idMarca", marca);
+
+        List<Estilo> estilosExistentes = estiloFacade.findByNamedQuery(namedQuery, parametros);
+        return !estilosExistentes.isEmpty();
+    }
+
     public String redirect(String opc) {
         if (estilo != null) {
             return opc + "?faces-redirect=true&amp;estiloRecibido=" + estilo.getIdEstilo();
@@ -105,10 +126,27 @@ public class PrincipalBean implements Serializable {
     //copiar usuario de datosgenerales
     public void crearFicha() {
 
+        if (marcaSeleccionada == null) {
+            lanzarMensajeError("Debe seleccionar una marca.");
+            return;
+        }
+
+        String nombreEstilo = estiloNuevo.getEstilo();
+        if (nombreEstilo == null || nombreEstilo.trim().isEmpty()) {
+            lanzarMensajeError("El nombre del estilo no puede estar vacío.");
+            return;
+        }
+
+        if (existeEstiloConMarca(nombreEstilo, marcaSeleccionada)) {
+            lanzarMensajeError("Ya existe una ficha activa con el nombre '" + nombreEstilo + "' y la marca '" + marcaSeleccionada.getNombre() + "'.");
+            return;
+        }
+
         estiloNuevo.setCreado(Calendar.getInstance().getTime());
         estiloNuevo.setActiva(true);
         estiloNuevo.setIdCreado(usuario);
         estiloNuevo.setEstado("En proceso");
+        estiloNuevo.setIdMarca(marcaSeleccionada);
         estiloFacade.create(estiloNuevo);
         lanzarMensajeInformacion("Ficha " + estiloNuevo.getEstilo() + " creada");
         listEstilo = estiloFacade.findActivos();
@@ -179,4 +217,19 @@ public class PrincipalBean implements Serializable {
         this.usuario = usuario;
     }
 
+    public List<Marca> getMarcaList() {
+        return marcaList;
+    }
+
+    public void setMarcaList(List<Marca> marcaList) {
+        this.marcaList = marcaList;
+    }
+
+    public Marca getMarcaSeleccionada() {
+        return marcaSeleccionada;
+    }
+
+    public void setMarcaSeleccionada(Marca marcaSeleccionada) {
+        this.marcaSeleccionada = marcaSeleccionada;
+    }
 }

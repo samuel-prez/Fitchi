@@ -17,6 +17,7 @@
 -->
 <glassfish-web-app error-url="">
   <property description="ruta imágenes" name="alternatedocroot_1" value="dir=C:\ from=/Cargues/*"/>
+  <context-root>/Fitchi-develop</context-root>
   <class-loader delegate="true"/>
   <jsp-config>
     <property name="keepgenerated" value="true">
