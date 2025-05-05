@@ -78,7 +78,7 @@
                                 <p:ajax event="rowReorder" listener="#{tejidoCircularesBean.onRowReorderHiloTejido}" update="dtHiloTejido"/>
                                 <p:ajax event="rowSelect" process="@this, dtHiloTejido" update="btnHilEdi"/>
                                 <p:ajax event="rowUnselect" process="@this, dtHiloTejido" update="btnHilEdi"/>
-                                
+
                                 <p:column headerText="Hilos/enhebrar" class="w-2">
                                     <h:outputText  value="#{hiloVar.idHiloParametro.nombre}"/>
                                 </p:column>
@@ -126,30 +126,72 @@
                         <div class=" align-items-center justify-content-start m-2 ">
                             <div class="card flex align-items-start justify-content-center" >
                                 <p >
-                                    <p:dataTable id="dtHiloTension" size="small"
-                                                 value="#{tejidoCircularesBean.hiloTensionList}" 
-                                                 var="tensionVar" >  
-                                        <f:facet name="header" >
-                                            Tensiones
-                                        </f:facet>
+                                    <div>   
+                                        <p:dataTable id="dtHiloTension" size="small"
+                                                     value="#{tejidoCircularesBean.hiloTensionList}" 
+                                                     var="tensionVar" >  
+                                            <f:facet name="header" >
+                                                Tensiones
+                                            </f:facet>
 
-                                        <p:column headerText="Hilo" class="w-8">
-                                            <h:outputText  value="#{tensionVar.idHilo.idMaterial.nombre}"/>
-                                        </p:column>
-                                        <p:column headerText="Gramos" class="w-4">
-                                            <h:outputText  value="#{tensionVar.tension}"/>
-                                        </p:column>
-                                        <p:column style="width:3rem;text-align: center">
-                                            <p:commandButton update="dtHiloTension" action="#{tejidoCircularesBean.borrarHiloTension()}" 
-                                                             process="@this,dtHiloTension" icon="pi pi-times" title="Borrar hilo"  disabled="#{tejidoCircularesBean.dsbEdicion}">
-                                                <f:setPropertyActionListener value="#{tensionVar}" target="#{tejidoCircularesBean.hiloTensionSeleccionado}"/>
-                                            </p:commandButton>
-                                        </p:column>
-                                        <f:facet name="footer" >
-                                            <p:commandButton value="Añadir tensión" class="text-sm" process="@this" update="dlgs:dlgTen" 
-                                                             actionListener="#{tejidoCircularesBean.abrirDlgTension()}" disabled="#{tejidoCircularesBean.dsbEdicion}"/>
-                                        </f:facet>
-                                    </p:dataTable>
+                                            <p:column headerText="Hilo" class="w-8">
+                                                <h:outputText  value="#{tensionVar.idHilo.idMaterial.nombre}"/>
+                                            </p:column>
+                                            <p:column headerText="Gramos" class="w-4">
+                                                <h:outputText  value="#{tensionVar.tension}"/>
+                                            </p:column>
+                                            <p:column style="width:3rem;text-align: center">
+                                                <p:commandButton update="dtHiloTension" action="#{tejidoCircularesBean.borrarHiloTension()}" 
+                                                                 process="@this,dtHiloTension" icon="pi pi-times" title="Borrar hilo"  disabled="#{tejidoCircularesBean.dsbEdicion}">
+                                                    <f:setPropertyActionListener value="#{tensionVar}" target="#{tejidoCircularesBean.hiloTensionSeleccionado}"/>
+                                                </p:commandButton>
+                                            </p:column>
+                                            <f:facet name="footer" >
+                                                <p:commandButton value="Añadir tensión" class="text-sm" process="@this" update="dlgs:dlgTen" 
+                                                                 actionListener="#{tejidoCircularesBean.abrirDlgTension()}" disabled="#{tejidoCircularesBean.dsbEdicion}"/>
+                                            </f:facet>
+                                        </p:dataTable>
+                                        <br/>
+                                        <p:dataTable id="dtSeleccion" size="small" value="#{tejidoCircularesBean.seleccionList}" 
+                                                     selectionMode="single" selection="#{tejidoCircularesBean.seleccion}"
+                                                     rowKey="#{seleccionVar.idSeleccion}"
+                                                     var="seleccionVar" >  
+                                            <f:facet name="header" >
+                                                Selección
+                                            </f:facet>
+                                            <p:ajax event="rowSelect" process="@this, dtSeleccion" update="btnSelEdi"/>
+                                            <p:ajax event="rowUnselect" process="@this, dtSeleccion" update="btnSelEdi"/>
+                                            <p:column headerText="Parámetro">
+                                                <h:outputText  value="#{seleccionVar.idSeleccionParametro.nombre}"/>
+                                            </p:column>
+                                            <p:column headerText="Alimen. 1">
+                                                <h:outputText  value="#{seleccionVar.idSeleccionAlimentador1.nombre}"/>
+                                            </p:column>
+                                            <p:column headerText="Alimen. 2">
+                                                <h:outputText  value="#{seleccionVar.idSeleccionAlimentador2.nombre}"/>
+                                            </p:column>
+                                            <p:column headerText="Alimen. 3">
+                                                <h:outputText  value="#{seleccionVar.idSeleccionAlimentador3.nombre}"/>
+                                            </p:column>
+                                            <p:column headerText="Alimen. 4">
+                                                <h:outputText  value="#{seleccionVar.idSeleccionAlimentador4.nombre}"/>
+                                            </p:column>
+                                            <p:column style="width:3rem;text-align: center">
+                                                <p:commandButton update="dtSeleccion" action="#{tejidoCircularesBean.borrarSeleccion()}" 
+                                                                 process="@this,dtSeleccion" icon="pi pi-times" title="Borrar hilo"  disabled="#{tejidoCircularesBean.dsbEdicion}">
+                                                    <f:setPropertyActionListener value="#{seleccionVar}" target="#{tejidoCircularesBean.seleccionSeleccionado}"/>
+                                                </p:commandButton>
+                                            </p:column>    
+                                            <f:facet name="footer" >
+                                                <p:commandButton value="Añadir selección" class="text-sm" process="@this" update="dlgs:dlgSel" 
+                                                                 actionListener="#{tejidoCircularesBean.abrirDlgSeleccion()}" disabled="#{tejidoCircularesBean.dsbEdicion}"/>
+                                                <p:commandButton value="Editar" 
+                                                                 disabled="#{tejidoCircularesBean.seleccion.idSeleccion eq null or tejidoCircularesBean.dsbEdicion}"
+                                                                 class="ml-1 text-sm" process="@this,dtSeleccion" update="dtSeleccion,dlgs:dlgSelEdi" id="btnSelEdi"
+                                                                 actionListener="#{tejidoCircularesBean.abrirDlgSeleccionEditar()}"/>
+                                            </f:facet>    
+                                        </p:dataTable>
+                                    </div> 
                                 </p>
                                 <p:divider layout="vertical" />
                                 <p >
@@ -294,7 +336,7 @@
             </h:panelGrid>            
 
         </p:dialog>
-        
+
         <p:dialog  header="Editar hilo" modal="true" id="dlgHilEdi" widgetVar="dlgHiloEditar">
 
             <h:panelGrid columns="1">
@@ -307,7 +349,7 @@
                 </p:selectOneMenu>
                 <p:divider />
                 <p:selectOneMenu  value="#{tejidoCircularesBean.hiloTejidoCirculares.idAlimentador1}" converter="entityConverter"
-                                 filter="true" filterMatchMode="contains">
+                                  filter="true" filterMatchMode="contains">
                     <f:selectItem itemLabel="Seleccione Alimentador 1" />
                     <f:selectItems value="#{tejidoCircularesBean.materialEstiloList}" var="materVar"
                                    itemValue="#{materVar}"
@@ -399,6 +441,105 @@
                 <p:commandButton value="Guardar" actionListener="#{tejidoCircularesBean.guardarHiloTubular()}"
                                  class="mt-3" process="@this,itTub,itDesT,itCantT" update="form:dtHiloTubulares,dlgTub"/>
             </h:panelGrid>            
+        </p:dialog>
+
+
+        <p:dialog  header="Crear seleccion" modal="true" id="dlgSel" widgetVar="dlgSeleccion">
+
+            <h:panelGrid columns="1">
+                <p:selectOneMenu value="#{tejidoCircularesBean.seleccion.idSeleccionParametro}" converter="entityConverter"
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="Seleccione parámetro" />
+                    <f:selectItems value="#{tejidoCircularesBean.seleccionParametroList}" var="seleccionParametroVar"
+                                   itemValue="#{seleccionParametroVar}"
+                                   itemLabel="#{seleccionParametroVar.nombre}"/>
+                </p:selectOneMenu>
+                <p:divider />
+                <p:selectOneMenu value="#{tejidoCircularesBean.seleccion.idSeleccionAlimentador1}" converter="entityConverter"
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="Seleccione Alimentador 1" />
+                    <f:selectItems value="#{tejidoCircularesBean.seleccionAlimentadorList}" var="alimentador1Var"
+                                   itemValue="#{alimentador1Var}"
+                                   itemLabel="#{alimentador1Var.nombre}"/>
+                </p:selectOneMenu>
+                <p:divider />
+                <p:selectOneMenu value="#{tejidoCircularesBean.seleccion.idSeleccionAlimentador2}" converter="entityConverter"
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="Seleccione Alimentador 2" />
+                    <f:selectItems value="#{tejidoCircularesBean.seleccionAlimentadorList}" var="alimentador2Var"
+                                   itemValue="#{alimentador2Var}"
+                                   itemLabel="#{alimentador2Var.nombre}"/>
+                </p:selectOneMenu>
+                <p:divider />
+                <p:selectOneMenu value="#{tejidoCircularesBean.seleccion.idSeleccionAlimentador3}" converter="entityConverter"
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="Seleccione Alimentador 3" />
+                    <f:selectItems value="#{tejidoCircularesBean.seleccionAlimentadorList}" var="alimentador3Var"
+                                   itemValue="#{alimentador3Var}"
+                                   itemLabel="#{alimentador3Var.nombre}"/>
+                </p:selectOneMenu>
+                <p:divider />
+                <p:selectOneMenu value="#{tejidoCircularesBean.seleccion.idSeleccionAlimentador4}" converter="entityConverter"
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="Seleccione Alimentador 4" />
+                    <f:selectItems value="#{tejidoCircularesBean.seleccionAlimentadorList}" var="alimentador4Var"
+                                   itemValue="#{alimentador4Var}"
+                                   itemLabel="#{alimentador4Var.nombre}"/>
+                </p:selectOneMenu>
+                <p:divider />
+                <p:commandButton value="Guardar" actionListener="#{tejidoCircularesBean.crearSeleccion()}"
+                                 class="mt-3" process="@this, dlgSel" update="form:dtSeleccion,dlgSel,form:msgs"/>
+            </h:panelGrid>            
+
+        </p:dialog>
+        
+        <p:dialog  header="Editar seleccion" modal="true" id="dlgSelEdi" widgetVar="dlgSeleccionEditar">
+
+            <h:panelGrid columns="1">
+                <p:selectOneMenu value="#{tejidoCircularesBean.seleccion.idSeleccionParametro}" converter="entityConverter"
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="Seleccione parámetro" />
+                    <f:selectItems value="#{tejidoCircularesBean.seleccionParametroList}" var="seleccionParametroVar"
+                                   itemValue="#{seleccionParametroVar}"
+                                   itemLabel="#{seleccionParametroVar.nombre}"/>
+                </p:selectOneMenu>
+                <p:divider />
+                <p:selectOneMenu value="#{tejidoCircularesBean.seleccion.idSeleccionAlimentador1}" converter="entityConverter"
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="Seleccione Alimentador 1" />
+                    <f:selectItems value="#{tejidoCircularesBean.seleccionAlimentadorList}" var="alimentador1Var"
+                                   itemValue="#{alimentador1Var}"
+                                   itemLabel="#{alimentador1Var.nombre}"/>
+                </p:selectOneMenu>
+                <p:divider />
+                <p:selectOneMenu value="#{tejidoCircularesBean.seleccion.idSeleccionAlimentador2}" converter="entityConverter"
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="Seleccione Alimentador 2" />
+                    <f:selectItems value="#{tejidoCircularesBean.seleccionAlimentadorList}" var="alimentador2Var"
+                                   itemValue="#{alimentador2Var}"
+                                   itemLabel="#{alimentador2Var.nombre}"/>
+                </p:selectOneMenu>
+                <p:divider />
+                <p:selectOneMenu value="#{tejidoCircularesBean.seleccion.idSeleccionAlimentador3}" converter="entityConverter"
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="Seleccione Alimentador 3" />
+                    <f:selectItems value="#{tejidoCircularesBean.seleccionAlimentadorList}" var="alimentador3Var"
+                                   itemValue="#{alimentador3Var}"
+                                   itemLabel="#{alimentador3Var.nombre}"/>
+                </p:selectOneMenu>
+                <p:divider />
+                <p:selectOneMenu value="#{tejidoCircularesBean.seleccion.idSeleccionAlimentador4}" converter="entityConverter"
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="Seleccione Alimentador 4" />
+                    <f:selectItems value="#{tejidoCircularesBean.seleccionAlimentadorList}" var="alimentador4Var"
+                                   itemValue="#{alimentador4Var}"
+                                   itemLabel="#{alimentador4Var.nombre}"/>
+                </p:selectOneMenu>
+                <p:divider />
+                <p:commandButton value="Guardar" actionListener="#{tejidoCircularesBean.editarSeleccion()}"
+                                 class="mt-3" process="@this, dlgSelEdi" update="form:dtSeleccion,dlgSelEdi,form:msgs"/>
+            </h:panelGrid>            
+
         </p:dialog>
 
     </h:form>

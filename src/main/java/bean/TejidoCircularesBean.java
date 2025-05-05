@@ -11,6 +11,9 @@ import entity.HiloTubular;
 import entity.MaterialEstilo;
 import entity.PrefijadoObs;
 import entity.Usuario;
+import entity.Seleccion;
+import entity.SeleccionAlimentador;
+import entity.SeleccionParametro;
 import facade.EstiloFacade;
 import facade.MaquinaFacade;
 import facade.TejidoCircularesFacade;
@@ -22,6 +25,9 @@ import facade.HiloTubularFacade;
 import facade.MaterialEstiloFacade;
 import facade.PrefijadoObsFacade;
 import facade.UsuarioFacade;
+import facade.SeleccionFacade;
+import facade.SeleccionAlimentadorFacade;
+import facade.SeleccionParametroFacade;
 import jasper.utilidades.JasperUtilidadesBeanLocal;
 import java.io.File;
 import java.io.Serializable;
@@ -73,6 +79,12 @@ public class TejidoCircularesBean implements Serializable {
     private MaterialEstiloFacade materialEstiloFacade;
     @EJB
     private JasperUtilidadesBeanLocal jasperUtilidadesBean;
+    @EJB
+    private SeleccionFacade seleccionFacade;
+    @EJB
+    private SeleccionAlimentadorFacade seleccionAlimentadorFacade;
+    @EJB
+    private SeleccionParametroFacade seleccionParametroFacade;
 
     private String estiloRecibido;
     private Estilo estilo;
@@ -83,6 +95,8 @@ public class TejidoCircularesBean implements Serializable {
     private HiloTension hiloTensionSeleccionado;
     private HiloTubular hiloTubular;
     private HiloTubular hiloTubularSeleccionado;
+    private Seleccion seleccion;
+    private Seleccion seleccionSeleccionado;
     private List<Maquina> maquinaList;
     private List<Embalaje> embalajeList;
     private List<HiloParametro> hiloParametroList;
@@ -92,6 +106,9 @@ public class TejidoCircularesBean implements Serializable {
     private List<PrefijadoObs> prefijadoObsList;
     private List<TejidoCirculares> tejidoCircularesList;
     private List<MaterialEstilo> materialEstiloList;
+    private List<Seleccion> seleccionList;
+    private List<SeleccionAlimentador> seleccionAlimentadorList;
+    private List<SeleccionParametro> seleccionParametroList;
     private List<String[]> prefijadoList;
     private String[] stringList;
     private Usuario usuario;
@@ -112,16 +129,20 @@ public class TejidoCircularesBean implements Serializable {
         llenarListas();
         validarPermisos();
     }
-    
+
     public void abrirDlgHiloEditar() {
         llenarMaterialEstilo();
         PrimeFaces.current().executeScript("PF('dlgHiloEditar').show();");
     }
-    
+
+    public void abrirDlgSeleccionEditar() {
+        PrimeFaces.current().executeScript("PF('dlgSeleccionEditar').show();");
+    }
+
     public String redirect(String opc) {
         return opc + "?faces-redirect=true&amp;estiloRecibido=" + estiloRecibido;
     }
-    
+
     public void imprimirReporte() {
 
         String rutaWebPages = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/");
@@ -134,7 +155,7 @@ public class TejidoCircularesBean implements Serializable {
         jasperUtilidadesBean.descargarReporte(rutaReportePaqueteTecnico, parametros1, nombrePDFGenerado);
 
     }
-    
+
     public void onRowReorderHiloTejido(ReorderEvent event) {
         int cont = 0;
         for (HiloTejidoCirculares pr : hiloTejidoCircularesList) {
@@ -165,19 +186,21 @@ public class TejidoCircularesBean implements Serializable {
             tejidoCirculares = tejidoCircularesList.get(0);
         }
     }
-    
+
     public void abrirDlgHilos() {
         //jalar listas necesarias
         hiloTejidoCirculares = new HiloTejidoCirculares();
         llenarMaterialEstilo();
         PrimeFaces.current().executeScript("PF('dlgHilo').show();");
     }
+
     public void abrirDlgTension() {
         //jalar listas necesarias
         hiloTension = new HiloTension();
         llenarMaterialEstilo();
         PrimeFaces.current().executeScript("PF('dlgTension').show();");
     }
+
     public void abrirDlgTubular() {
         //jalar listas necesarias
         hiloTubular = new HiloTubular();
@@ -185,7 +208,12 @@ public class TejidoCircularesBean implements Serializable {
         llenarMaterialEstilo();
         PrimeFaces.current().executeScript("PF('dlgTubular').show();");
     }
-    
+
+    public void abrirDlgSeleccion() {
+        seleccion = new Seleccion();
+        PrimeFaces.current().executeScript("PF('dlgSeleccion').show();");
+    }
+
     public void llenarMaterialEstilo() {
         String namedQuery = "MaterialEstilo.findByIdEstiloAndIdArea";
         Map<String, Object> parametros = new HashMap<>();
@@ -193,12 +221,12 @@ public class TejidoCircularesBean implements Serializable {
         parametros.put("idArea", 1);
         materialEstiloList = materialEstiloFacade.findByNamedQuery(namedQuery, parametros);
     }
-    
+
     public void guardar() {
         tejidoCircularesFacade.edit(tejidoCirculares);
         lanzarMensajeInformacion("Cambios guardados");
     }
-    
+
     public void guardarHiloTejidoCirculares() {
         hiloTejidoCirculares.setIdTejidoCirculares(tejidoCirculares);
         hiloTejidoCirculares.setOrden(hiloTejidoCircularesList.size());
@@ -209,7 +237,7 @@ public class TejidoCircularesBean implements Serializable {
         tejidoCircularesFacade.edit(tejidoCirculares);
         PrimeFaces.current().executeScript("PF('dlgHilo').hide();");
     }
-    
+
     public void editarHiloTejidoCirculares() {
         hiloTejidoCircularesFacade.edit(hiloTejidoCirculares);
         tejidoCirculares.setActualizado(fechaActual);
@@ -217,14 +245,37 @@ public class TejidoCircularesBean implements Serializable {
         tejidoCircularesFacade.edit(tejidoCirculares);
         PrimeFaces.current().executeScript("PF('dlgHiloEditar').hide();");
     }
-    
+
+    public void crearSeleccion() {
+        seleccion.setCreado(fechaActual);
+        seleccion.setActualizado(fechaActual);
+        seleccion.setIdCreado(usuario);
+        seleccion.setIdActualizado(usuario);
+        seleccion.setIdTejidoCirculares(tejidoCirculares);
+        seleccionFacade.create(seleccion);
+        tejidoCirculares.setActualizado(fechaActual);
+        tejidoCirculares.setIdActualizado(usuario);
+        tejidoCircularesFacade.edit(tejidoCirculares);
+        seleccionList.add(seleccion);
+        PrimeFaces.current().executeScript("PF('dlgSeleccion').hide();");
+        lanzarMensajeInformacion("Registro creado");
+    }
+
+    public void editarSeleccion() {
+        seleccion.setActualizado(fechaActual);
+        seleccion.setIdActualizado(usuario);
+        seleccionFacade.edit(seleccion);
+        lanzarMensajeInformacion("Registro editado");
+        PrimeFaces.current().executeScript("PF('dlgSeleccionEditar').hide();");
+    }
+
     public void guardarHiloTension() {
         hiloTension.setIdTejidoCirculares(tejidoCirculares);
         hiloTensionFacade.create(hiloTension);
         hiloTensionList.add(hiloTension);
         PrimeFaces.current().executeScript("PF('dlgTension').hide();");
     }
-    
+
     public void guardarHiloTubular() {
         hiloTubular.setIdTejidoCirculares(tejidoCirculares);
         hiloTubularFacade.create(hiloTubular);
@@ -253,17 +304,19 @@ public class TejidoCircularesBean implements Serializable {
         hiloTejidoCircularesList = hiloTejidoCircularesFacade.findByNamedQuery(namedQuery, parametros);
         //llenar hiloTension
         String namedQuery2 = "HiloTension.findByIdTejidoCirculares";
-        Map<String, Object> parametros2 = new HashMap<>();
-        parametros2.put("idTejidoCirculares", tejidoCirculares);
-        hiloTensionList = hiloTensionFacade.findByNamedQuery(namedQuery2, parametros2);
+        hiloTensionList = hiloTensionFacade.findByNamedQuery(namedQuery2, parametros);
         //llenar hiloTubular
         String namedQuery3 = "HiloTubular.findByIdTejidoCirculares";
-        Map<String, Object> parametros3 = new HashMap<>();
-        parametros3.put("idTejidoCirculares", tejidoCirculares);
-        hiloTubularList = hiloTubularFacade.findByNamedQuery(namedQuery3, parametros3);
+        hiloTubularList = hiloTubularFacade.findByNamedQuery(namedQuery3, parametros);
+        //llenar listas de selección
+        seleccionAlimentadorList = seleccionAlimentadorFacade.findAll();
+        seleccionParametroList = seleccionParametroFacade.findAll();
+        namedQuery3 = "Seleccion.findByIdTejidoCirculares";
+        seleccionList = seleccionFacade.findByNamedQuery(namedQuery3, parametros);
+        seleccion = new Seleccion(); //error si no se inicializa acá
         llenarPrefijado();
     }
-    
+
     public void borrarHiloTejidoCirculares() {
         hiloTejidoCircularesFacade.remove(hiloTejidoCircularesSeleccionado);
         String namedQuery = "HiloTejidoCirculares.findTejidoCirculares";
@@ -271,7 +324,7 @@ public class TejidoCircularesBean implements Serializable {
         parametros.put("idTejidoCirculares", tejidoCirculares);
         hiloTejidoCircularesList = hiloTejidoCircularesFacade.findByNamedQuery(namedQuery, parametros);
     }
-    
+
     public void borrarHiloTension() {
         hiloTensionFacade.remove(hiloTensionSeleccionado);
         String namedQuery2 = "HiloTension.findByIdTejidoCirculares";
@@ -279,7 +332,15 @@ public class TejidoCircularesBean implements Serializable {
         parametros2.put("idTejidoCirculares", tejidoCirculares);
         hiloTensionList = hiloTensionFacade.findByNamedQuery(namedQuery2, parametros2);
     }
-    
+
+    public void borrarSeleccion() {
+        seleccionFacade.remove(seleccionSeleccionado);
+        String namedQuery = "Seleccion.findByIdTejidoCirculares";
+        Map<String, Object> parametros = new HashMap<>();
+        parametros.put("idTejidoCirculares", tejidoCirculares);
+        seleccionList = seleccionFacade.findByNamedQuery(namedQuery, parametros);
+    }
+
     public void borrarHiloTubular() {
         hiloTubularFacade.remove(hiloTubularSeleccionado);
         String namedQuery3 = "HiloTubular.findByIdTejidoCirculares";
@@ -287,7 +348,7 @@ public class TejidoCircularesBean implements Serializable {
         parametros3.put("idTejidoCirculares", tejidoCirculares);
         hiloTubularList = hiloTubularFacade.findByNamedQuery(namedQuery3, parametros3);
     }
-    
+
     public void llenarPrefijado() {
         prefijadoList = new ArrayList<>();
         stringList = new String[4];
@@ -333,7 +394,7 @@ public class TejidoCircularesBean implements Serializable {
         stringList[3] = "";
         prefijadoList.add(stringList);
     }
-    
+
     private void validarPermisos() {
         switch (usuario.getIdRol().getIdRol()) {
             case idRolConsulta:
@@ -354,7 +415,7 @@ public class TejidoCircularesBean implements Serializable {
                 break;
         }
     }
-    
+
     public void lanzarMensajeInformacion(String mensaje) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Informacion", mensaje));
     }
@@ -375,8 +436,38 @@ public class TejidoCircularesBean implements Serializable {
         this.hiloTejidoCircularesSeleccionado = hiloTejidoCircularesSeleccionado;
     }
 
-    
-    
+    public List<Seleccion> getSeleccionList() {
+        return seleccionList;
+    }
+
+    public void setSeleccionList(List<Seleccion> seleccionList) {
+        this.seleccionList = seleccionList;
+    }
+
+    public List<SeleccionAlimentador> getSeleccionAlimentadorList() {
+        return seleccionAlimentadorList;
+    }
+
+    public void setSeleccionAlimentadorList(List<SeleccionAlimentador> seleccionAlimentadorList) {
+        this.seleccionAlimentadorList = seleccionAlimentadorList;
+    }
+
+    public List<SeleccionParametro> getSeleccionParametroList() {
+        return seleccionParametroList;
+    }
+
+    public void setSeleccionParametroList(List<SeleccionParametro> seleccionParametroList) {
+        this.seleccionParametroList = seleccionParametroList;
+    }
+
+    public Seleccion getSeleccion() {
+        return seleccion;
+    }
+
+    public void setSeleccion(Seleccion seleccion) {
+        this.seleccion = seleccion;
+    }
+
     public Estilo getEstilo() {
         return estilo;
     }
@@ -463,6 +554,14 @@ public class TejidoCircularesBean implements Serializable {
 
     public void setTejidoCirculares(TejidoCirculares tejidoCirculares) {
         this.tejidoCirculares = tejidoCirculares;
+    }
+
+    public Seleccion getSeleccionSeleccionado() {
+        return seleccionSeleccionado;
+    }
+
+    public void setSeleccionSeleccionado(Seleccion seleccionSeleccionado) {
+        this.seleccionSeleccionado = seleccionSeleccionado;
     }
 
     public List<Maquina> getMaquinaList() {
