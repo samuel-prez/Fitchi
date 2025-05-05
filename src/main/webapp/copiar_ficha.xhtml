@@ -64,8 +64,15 @@
 
                                 <p:outputLabel for="ref" value="Referencia"/>
                                 <p:inputText id="ref" value="#{copiarFichaBean.estiloNuevo.referencias}" />
+                                <p:outputLabel for="mrc" value="Marca"/>
+                                <p:selectOneMenu id="mrc" value="#{copiarFichaBean.marcaSeleccionada}"
+                                                 converter="entityConverter">
+                                    <f:selectItem itemLabel="Seleccione una marca" itemValue="#{null}" />
+                                    <f:selectItems value="#{copiarFichaBean.marcaList}" var="marca" 
+                                                   itemLabel="#{marca.nombre}" itemValue="#{marca}" />
+                                </p:selectOneMenu>
 
-                                <p:commandButton value="Crear" actionListener="#{copiarFichaBean.copiarFicha()}" process="@this, est,ref,form:dtEstilo" update="creFich,form:msgs" 
+                                <p:commandButton value="Crear" actionListener="#{copiarFichaBean.copiarFicha()}" process="@this, est,ref,mrc form:dtEstilo" update="creFich,form:msgs" 
                                                  class="mt-2"/>
                             </h:panelGrid>
 

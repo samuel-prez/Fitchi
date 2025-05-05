@@ -4,6 +4,8 @@
  */
 package bean;
 
+import facade.MarcaFacade;
+import entity.Marca;
 import entity.ColorEstilo;
 import entity.ControlMedidas;
 import entity.ControlMedidasTalla;
@@ -114,6 +116,8 @@ public class CopiarFichaBean implements Serializable {
     private ControlMedidasFacade controlMedidasFacade;
     @EJB
     private ControlMedidasTallaFacade controlMedidasTallaFacade;
+     @EJB
+    private MarcaFacade marcaFacade;
 
     private Usuario usuario;
     private List<Estilo> listEstilo;
@@ -142,6 +146,8 @@ public class CopiarFichaBean implements Serializable {
     private boolean dsbBtn;
     private Date fechaActual;
     private Map<String, Object> parametros;
+    private List<Marca> marcaList;
+    private Marca marcaSeleccionada;
 
     @PostConstruct
     public void init() {
@@ -149,9 +155,40 @@ public class CopiarFichaBean implements Serializable {
         estilo = new Estilo();
         traerUsuario();
         dsbBtn = true;
+        marcaList = marcaFacade.findAll();
+    }
+        public boolean existeEstiloConMarca(String nombreEstilo, Marca marca) {
+        if (marca == null || nombreEstilo == null || nombreEstilo.trim().isEmpty()) {
+            return false;
+        }
+
+        String namedQuery = "Estilo.findByEstiloAndMarca";
+        Map<String, Object> parametros = new HashMap<>();
+        parametros.put("estilo", nombreEstilo);
+        parametros.put("idMarca", marca);
+
+        List<Estilo> estilosExistentes = estiloFacade.findByNamedQuery(namedQuery, parametros);
+        return !estilosExistentes.isEmpty();
     }
 
+
     public void copiarFicha() {
+         if (marcaSeleccionada == null) {
+            lanzarMensajeError("Debe seleccionar una marca.");
+            return;
+        }
+
+        String nombreEstilo = estiloNuevo.getEstilo();
+        if (nombreEstilo == null || nombreEstilo.trim().isEmpty()) {
+            lanzarMensajeError("El nombre del estilo no puede estar vacío.");
+            return;
+        }
+
+        if (existeEstiloConMarca(nombreEstilo, marcaSeleccionada)) {
+            lanzarMensajeError("Ya existe una ficha activa con el nombre '" + nombreEstilo + "' y la marca '" + marcaSeleccionada.getNombre() + "'.");
+            return;
+        }
+
         fechaActual = Calendar.getInstance().getTime();
         parametros = new HashMap<>();
         parametros.put("idEstilo", estilo);
@@ -593,6 +630,21 @@ public class CopiarFichaBean implements Serializable {
 
     public void setEstilo(Estilo estilo) {
         this.estilo = estilo;
+    }
+     public List<Marca> getMarcaList() {
+        return marcaList;
+    }
+
+    public void setMarcaList(List<Marca> marcaList) {
+        this.marcaList = marcaList;
+    }
+
+    public Marca getMarcaSeleccionada() {
+        return marcaSeleccionada;
+    }
+
+    public void setMarcaSeleccionada(Marca marcaSeleccionada) {
+        this.marcaSeleccionada = marcaSeleccionada;
     }
 
 }

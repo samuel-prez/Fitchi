@@ -46,7 +46,11 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Estilo.findByCreado", query = "SELECT e FROM Estilo e WHERE e.creado = :creado"),
     @NamedQuery(name = "Estilo.findByActualizado", query = "SELECT e FROM Estilo e WHERE e.actualizado = :actualizado"),
     @NamedQuery(name = "Estilo.findByIdMercadoObjetivo", query = "SELECT e FROM Estilo e WHERE e.idMercadoObjetivo = :idMercadoObjetivo"),
-    @NamedQuery(name = "Estilo.findByActiva", query = "SELECT e FROM Estilo e WHERE e.activa = :activa")})
+    @NamedQuery(name = "Estilo.findByActiva", query = "SELECT e FROM Estilo e WHERE e.activa = :activa"),
+    @NamedQuery(name = "Estilo.findByEstiloAndMarca", query = "SELECT e FROM Estilo e WHERE e.estilo = :estilo AND e.idMarca = :idMarca AND e.activa = true"),
+    @NamedQuery(name = "Estilo.findByIdMarca", query = "SELECT e FROM Estilo e WHERE e.idMarca = :idMarca AND e.activa = true"),})
+    
+
 public class Estilo implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -329,7 +333,6 @@ public class Estilo implements Serializable {
         this.activa = activa;
     }
 
-
     public Categoria getIdCategoria() {
         return idCategoria;
     }
@@ -445,5 +448,5 @@ public class Estilo implements Serializable {
     public String toString() {
         return "entity.Estilo[ idEstilo=" + idEstilo + " ]";
     }
-    
+
 }
