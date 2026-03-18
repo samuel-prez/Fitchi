@@ -113,7 +113,7 @@ public class ProcesoConfeccionBean implements Serializable {
         llenarListas();
         validarPermisos();
     }
-    
+
     public void onRowEdit(RowEditEvent<ProcesoConfeccionFase> event) {
         //FacesMessage msg = new FacesMessage("Product Edited", String.valueOf(event.getObject().getCode()));
         //FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -174,67 +174,97 @@ public class ProcesoConfeccionBean implements Serializable {
     }
 
     public void borrarFase(int opc) {
+
         procesoConfeccionFaseFacade.remove(faseSeleccionada);
-        //llena la lista que se actualizó con el borrado
+
         String namedQuery = "ProcesoConfeccionFase.findByIdEtapa";
         Map<String, Object> parametros = new HashMap<>();
         parametros.put("idProcesoConfeccion", procesoConfeccion);
         parametros.put("idEtapa", procesoConfeccionEtapaList.get(opc));
+
+        List<ProcesoConfeccionFase> listaActualizada
+                = procesoConfeccionFaseFacade.findByNamedQuery(namedQuery, parametros);
+
+        int orden = 0;
+        for (ProcesoConfeccionFase fase : listaActualizada) {
+            fase.setOrden(orden++);
+            procesoConfeccionFaseFacade.edit(fase);
+        }
+
         switch (opc) {
             case 0:
-                corteTelaList = procesoConfeccionFaseFacade.findByNamedQuery(namedQuery, parametros);
+                corteTelaList = listaActualizada;
                 break;
             case 1:
-                corteTubularList = procesoConfeccionFaseFacade.findByNamedQuery(namedQuery, parametros);
+                corteTubularList = listaActualizada;
                 break;
             case 2:
-                armarPrendaList = procesoConfeccionFaseFacade.findByNamedQuery(namedQuery, parametros);
+                armarPrendaList = listaActualizada;
                 break;
         }
     }
 
     public void añadirCorteTela() {
-        int finalOrden = corteTelaList.size();
+
+        for (ProcesoConfeccionFase fase : corteTelaList) {
+            fase.setOrden(fase.getOrden() + 1);
+            procesoConfeccionFaseFacade.edit(fase);
+        }
+
         corteTela.setIdProcesoConfeccionEtapa(procesoConfeccionEtapaList.get(0));
         corteTela.setIdProcesoConfeccion(procesoConfeccion);
-        corteTela.setOrden(finalOrden);
+        corteTela.setOrden(0);
         procesoConfeccionFaseFacade.edit(corteTela);
-        corteTela = new ProcesoConfeccionFase();
+
         String namedQuery = "ProcesoConfeccionFase.findByIdEtapa";
         Map<String, Object> parametros = new HashMap<>();
         parametros.put("idProcesoConfeccion", procesoConfeccion);
         parametros.put("idEtapa", procesoConfeccionEtapaList.get(0));
         corteTelaList = procesoConfeccionFaseFacade.findByNamedQuery(namedQuery, parametros);
+
+        corteTela = new ProcesoConfeccionFase();
     }
 
     public void añadirCorteTubular() {
-        int finalOrden = corteTubularList.size();
-        
+
+        for (ProcesoConfeccionFase fase : corteTubularList) {
+            fase.setOrden(fase.getOrden() + 1);
+            procesoConfeccionFaseFacade.edit(fase);
+        }
+
         corteTubular.setIdProcesoConfeccionEtapa(procesoConfeccionEtapaList.get(1));
         corteTubular.setIdProcesoConfeccion(procesoConfeccion);
-        corteTubular.setOrden(finalOrden);
+        corteTubular.setOrden(0);
         procesoConfeccionFaseFacade.edit(corteTubular);
-        corteTubular = new ProcesoConfeccionFase();
+
         String namedQuery = "ProcesoConfeccionFase.findByIdEtapa";
         Map<String, Object> parametros = new HashMap<>();
         parametros.put("idProcesoConfeccion", procesoConfeccion);
         parametros.put("idEtapa", procesoConfeccionEtapaList.get(1));
         corteTubularList = procesoConfeccionFaseFacade.findByNamedQuery(namedQuery, parametros);
+
+        corteTubular = new ProcesoConfeccionFase();
     }
 
     public void añadirArmarPrenda() {
-        int finalOrden = armarPrendaList.size();
+
+        for (ProcesoConfeccionFase fase : armarPrendaList) {
+            fase.setOrden(fase.getOrden() + 1);
+            procesoConfeccionFaseFacade.edit(fase);
+        }
+
         armarPrenda.setIdProcesoConfeccionEtapa(procesoConfeccionEtapaList.get(2));
         armarPrenda.setIdProcesoConfeccion(procesoConfeccion);
-        armarPrenda.setOrden(finalOrden);
+        armarPrenda.setOrden(0);
         procesoConfeccionFaseFacade.edit(armarPrenda);
-        armarPrenda = new ProcesoConfeccionFase();
-    
+
         String namedQuery = "ProcesoConfeccionFase.findByIdEtapa";
         Map<String, Object> parametros = new HashMap<>();
         parametros.put("idProcesoConfeccion", procesoConfeccion);
         parametros.put("idEtapa", procesoConfeccionEtapaList.get(2));
         armarPrendaList = procesoConfeccionFaseFacade.findByNamedQuery(namedQuery, parametros);
+
+        armarPrenda = new ProcesoConfeccionFase();
     }
 
     public void guardarCantidades() {

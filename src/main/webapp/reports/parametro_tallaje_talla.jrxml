@@ -34,7 +34,7 @@ where pt.id_estilo = $P{ID_ESTILO}]]>
 	<group name="grupo_tallas">
 		<groupExpression><![CDATA[$F{talla}]]></groupExpression>
 		<groupHeader>
-			<band height="44">
+			<band height="59">
 				<staticText>
 					<reportElement x="0" y="0" width="88" height="22" uuid="fb75cfce-8ca2-4380-b043-60b96708009b"/>
 					<box topPadding="3" leftPadding="3">
@@ -64,7 +64,7 @@ where pt.id_estilo = $P{ID_ESTILO}]]>
 					<textFieldExpression><![CDATA[$F{talla}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="398" y="22" width="67" height="22" uuid="93f82f32-2bf1-4ac9-b395-a522ebc1746d"/>
+					<reportElement x="398" y="22" width="67" height="37" uuid="93f82f32-2bf1-4ac9-b395-a522ebc1746d"/>
 					<box topPadding="3" leftPadding="3">
 						<pen lineWidth="0.25"/>
 						<topPen lineWidth="0.25"/>
@@ -78,7 +78,7 @@ where pt.id_estilo = $P{ID_ESTILO}]]>
 					<text><![CDATA[Lector]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="0" y="22" width="155" height="22" uuid="f6c7924b-b2b3-477b-a3a9-6af494dfdd99"/>
+					<reportElement x="0" y="22" width="155" height="37" uuid="f6c7924b-b2b3-477b-a3a9-6af494dfdd99"/>
 					<box topPadding="3" leftPadding="3">
 						<pen lineWidth="0.25"/>
 						<topPen lineWidth="0.25"/>
@@ -91,8 +91,8 @@ where pt.id_estilo = $P{ID_ESTILO}]]>
 					</textElement>
 					<text><![CDATA[Identifiación tubular tejido]]></text>
 				</staticText>
-				<textField isBlankWhenNull="true">
-					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="155" y="22" width="243" height="22" isPrintWhenDetailOverflows="true" uuid="1ad38563-8186-4d19-8bed-e29e9c860d09"/>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="155" y="22" width="243" height="37" isPrintWhenDetailOverflows="true" uuid="1ad38563-8186-4d19-8bed-e29e9c860d09"/>
 					<box topPadding="3" leftPadding="3">
 						<pen lineWidth="0.25"/>
 						<topPen lineWidth="0.25"/>
@@ -106,7 +106,7 @@ where pt.id_estilo = $P{ID_ESTILO}]]>
 					<textFieldExpression><![CDATA[$F{identificacion_talla_tejido}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="465" y="22" width="110" height="22" isPrintWhenDetailOverflows="true" uuid="c1c57109-0dcc-4c23-82aa-f2611ab75fed"/>
+					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="465" y="22" width="110" height="37" isPrintWhenDetailOverflows="true" uuid="c1c57109-0dcc-4c23-82aa-f2611ab75fed"/>
 					<box topPadding="3" leftPadding="3">
 						<pen lineWidth="0.25"/>
 						<topPen lineWidth="0.25"/>
