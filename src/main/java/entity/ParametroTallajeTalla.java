@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "ParametroTallajeTalla.findByLector", query = "SELECT p FROM ParametroTallajeTalla p WHERE p.lector = :lector"),
     @NamedQuery(name = "ParametroTallajeTalla.findByObservaciones", query = "SELECT p FROM ParametroTallajeTalla p WHERE p.observaciones = :observaciones"),
     @NamedQuery(name = "ParametroTallajeTalla.findByIdParametroTallaje", query = "SELECT p FROM ParametroTallajeTalla p WHERE p.idParametroTallaje = :idParametroTallaje"),
-
+    @NamedQuery(name = "ParametroTallajeTalla.findByIdTallaEstilo", query = "SELECT p FROM ParametroTallajeTalla p WHERE p.idTallaEstilo = :idTallaEstilo"),
 })
 public class ParametroTallajeTalla implements Serializable {
 

@@ -21,7 +21,11 @@ import entity.TallaEtiqueta;
 import entity.Usuario;
 import entity.Composicion;
 import entity.GuiaTallas;
+import entity.ParametroTallaje;
+import entity.ParametroTallajeTalla;
 import facade.CategoriaFacade;
+import facade.ParametroTallajeFacade;
+import facade.ParametroTallajeTallaFacade;
 import facade.ColorFacade;
 import facade.ColorEstiloFacade;
 import facade.LineaProductoFacade;
@@ -103,6 +107,10 @@ public class DatosGeneralesBean implements Serializable {
     private ComposicionFacade composicionFacade;
     @EJB
     private GuiaTallasFacade guiaTallasFacade;
+    @EJB
+    private ParametroTallajeFacade parametroTallajeFacade;
+    @EJB
+    private ParametroTallajeTallaFacade parametroTallajeTallaFacade;
 
     private Estilo estilo;
     private String estiloRecibido;
@@ -214,6 +222,14 @@ public class DatosGeneralesBean implements Serializable {
     }
 
     public void borrarTalla() {
+        Map<String, Object> paramPTT = new HashMap<>();
+        paramPTT.put("idTallaEstilo", tallaSeleccionada);
+        List<ParametroTallajeTalla> pttList = parametroTallajeTallaFacade.findByNamedQuery("ParametroTallajeTalla.findByIdTallaEstilo", paramPTT);
+        if (pttList != null) {
+            for (ParametroTallajeTalla ptt : pttList) {
+                parametroTallajeTallaFacade.remove(ptt);
+            }
+        }
         tallaEstiloFacade.remove(tallaSeleccionada);
         String namedQuery2 = "TallaEstilo.findByIdEstilo";
         Map<String, Object> parametros2 = new HashMap<>();
@@ -277,6 +293,15 @@ public class DatosGeneralesBean implements Serializable {
         tallaEstilo.setIdEstilo(estilo);
         tallaEstiloFacade.create(tallaEstilo);
         tallaEstiloList.add(tallaEstilo);
+        Map<String, Object> paramPT = new HashMap<>();
+        paramPT.put("idEstilo", estilo);
+        List<ParametroTallaje> ptList = parametroTallajeFacade.findByNamedQuery("ParametroTallaje.findByIdEstilo", paramPT);
+        if (ptList != null && !ptList.isEmpty()) {
+            ParametroTallajeTalla ptt = new ParametroTallajeTalla();
+            ptt.setIdParametroTallaje(ptList.get(0));
+            ptt.setIdTallaEstilo(tallaEstilo);
+            parametroTallajeTallaFacade.create(ptt);
+        }
         PrimeFaces.current().executeScript("PF('dlgTalla').hide();");
     }
     
