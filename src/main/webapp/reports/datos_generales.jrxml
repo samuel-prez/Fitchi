@@ -623,7 +623,7 @@ DATOS GENERALES]]></text>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "datos_generales_parametro.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement x="0" y="0" width="298" height="45" uuid="332a7527-9532-46ab-a64f-693eb8620480"/>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="337" height="60" uuid="332a7527-9532-46ab-a64f-693eb8620480"/>
 				<subreportParameter name="ID_ESTILO">
 					<subreportParameterExpression><![CDATA[$P{ID_ESTILO}]]></subreportParameterExpression>
 				</subreportParameter>

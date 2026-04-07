@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="tejido_circulares" printOrder="Horizontal" pageWidth="612" pageHeight="792" columnWidth="582" leftMargin="15" rightMargin="15" topMargin="15" bottomMargin="15" isSummaryWithPageHeaderAndFooter="true" isFloatColumnFooter="true" uuid="c63ad8ec-e4db-4b5f-bfd8-9f26a52ef47b">
 	<property name="ireport.zoom" value="1.6105100000000074"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="413"/>
+	<property name="ireport.y" value="393"/>
 	<parameter name="ID_ESTILO" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -747,7 +747,7 @@ TEJIDOS CIRCULARES]]></text>
 		</band>
 	</lastPageFooter>
 	<summary>
-		<band height="186" splitType="Stretch">
+		<band height="326" splitType="Stretch">
 			<subreport isUsingCache="true">
 				<reportElement isPrintRepeatedValues="false" x="0" y="0" width="582" height="135" uuid="2b0b7e22-e870-43bd-b705-e51eb9bb9c76"/>
 				<subreportParameter name="ID_ESTILO">
@@ -757,7 +757,7 @@ TEJIDOS CIRCULARES]]></text>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "tejido_circulares_hilo.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="73" y="147" width="417" height="31" uuid="252b02b6-662c-41d2-a4c3-90fecb108150"/>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="72" y="135" width="417" height="130" uuid="252b02b6-662c-41d2-a4c3-90fecb108150"/>
 				<subreportParameter name="ID_ESTILO">
 					<subreportParameterExpression><![CDATA[$P{ID_ESTILO}]]></subreportParameterExpression>
 				</subreportParameter>
